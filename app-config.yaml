@@ -8,8 +8,15 @@ packages:
   - pulseaudio-utils
   - vlc
 
+users:
+  - name: radio
+    groups: [audio, video]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+
 write_files:
-  - path: /root/bashrc
+  - path: /home/radio/.bashrc
     content: |
       export PULSE_SERVER=unix:/mnt/pulse-socket
       export PULSE_COOKIE=/mnt/pulse-cookie
@@ -21,21 +28,24 @@ write_files:
       After=network.target
 
       [Service]
-      # Zwróć uwagę na ścieżkę /mnt/app/app.py
+      # Uruchamiamy jako użytkownik radio, nie root!
+      User=radio
+      Group=radio
       ExecStart=/usr/bin/python3 /mnt/app/app.py
-
       Restart=always
-      User=root
+      Environment=HOME=/home/radio
+
 
       # Key additions for Audio:
-      Environment=PULSE_SERVER=unix:/mnt/pulse-socket
-      Environment=PULSE_COOKIE=/mnt/pulse-cookie
-      Environment=HOME=/root
+      # Environment=PULSE_SERVER=unix:/mnt/pulse-socket
+      # Environment=PULSE_COOKIE=/mnt/pulse-cookie
+      # Environment=HOME=/home/radio
 
       [Install]
       WantedBy=multi-user.target
 
 runcmd:
+  - chown -R radio:radio /mnt/app
   - systemctl daemon-reload
   - systemctl enable python-radio-app.service
   # Nie startujemy usługi od razu, bo folder /mnt/app pojawi się za chwilę

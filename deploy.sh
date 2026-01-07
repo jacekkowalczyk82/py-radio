@@ -20,10 +20,14 @@ lxc config device add my-lxc-radio-automat-1 pulse-socket disk source=/run/user/
 lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
 
 # 3. Add GPU/Audio device access (Standard for sound)
-lxc config device add my-lxc-radio-automat-1 my-sound unix-char path=/dev/snd/controlC0
+# lxc config device add my-lxc-radio-automat-1 my-sound unix-char path=/dev/snd/controlC0
 # Lub najbardziej uniwersalna metoda dla dźwięku:
 # lxc config device add my-lxc-radio-automat-1 audio proxy listen=tcp:0.0.0.0:4713 connect=tcp:127.0.0.1:4713
 
+
+# alsa 
+lxc config device add my-lxc-radio-automat-1 alsa-control unix-char path=/dev/snd/controlC0
+lxc config device add my-lxc-radio-automat-1 alsa-pcm unix-char path=/dev/snd/pcmC0D0p
 
 lxc list 
 

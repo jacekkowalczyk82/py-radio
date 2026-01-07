@@ -12,7 +12,7 @@ hostname = socket.gethostname()
 print(f"Radio Python na kontenerze {hostname} wystartowała!")
 # Prosta pętla, aby proces nie zginął (np. udajemy serwer)
 
-instance = vlc.Instance('--run-as-root', '--no-video')
+instance = vlc.Instance('--no-video', '--aout=alsa')
 player = instance.media_player_new()
 # player = vlc.MediaPlayer()
 player.audio_set_volume(100)
