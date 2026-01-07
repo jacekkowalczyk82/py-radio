@@ -5,8 +5,15 @@ packages:
   - python3-pip
   - python3-vlc
   - python3-requests
+  - pulseaudio-utils
+  - vlc
 
 write_files:
+  - path: /root/bashrc
+    content: |
+      export PULSE_SERVER=unix:/mnt/pulse-socket
+      export PULSE_COOKIE=/mnt/pulse-cookie
+      
   - path: /etc/systemd/system/python-radio-app.service
     content: |
       [Unit]
@@ -19,6 +26,11 @@ write_files:
 
       Restart=always
       User=root
+
+      # Key additions for Audio:
+      Environment=PULSE_SERVER=unix:/mnt/pulse-socket
+      Environment=PULSE_COOKIE=/mnt/pulse-cookie
+      Environment=HOME=/root
 
       [Install]
       WantedBy=multi-user.target
