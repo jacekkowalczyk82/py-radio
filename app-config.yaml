@@ -2,17 +2,18 @@
 package_update: true
 packages:
   - python3
+  - python3-pip
 
 write_files:
-  - path: /etc/systemd/system/python-app.service
+  - path: /etc/systemd/system/python-radio-app.service
     content: |
       [Unit]
-      Description=Aplikacja z hosta
+      Description=Radio python app
       After=network.target
 
       [Service]
-      # Zwróć uwagę na ścieżkę /mnt/app/app.py
-      ExecStart=/usr/bin/python3 /mnt/app/app.py
+      # Zwróć uwagę na ścieżkę /mnt/app/run-radio-service.sh
+      ExecStart=/mnt/app/run-radio-service.sh
       Restart=always
       User=root
 
@@ -21,7 +22,7 @@ write_files:
 
 runcmd:
   - systemctl daemon-reload
-  - systemctl enable python-app.service
+  - systemctl enable python-radio-app.service
   # Nie startujemy usługi od razu, bo folder /mnt/app pojawi się za chwilę
   # Pętla czekająca na pojawienie się pliku z hosta
-  - [ sh, -c, "until [ -f /mnt/app/app.py ]; do sleep 2; done && systemctl start python-app.service" ]
+  - [ sh, -c, "until [ -f /mnt/app/app.py ]; do sleep 2; done && systemctl start python-radio-app.service" ]
