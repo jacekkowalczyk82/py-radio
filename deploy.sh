@@ -43,7 +43,9 @@ elif [ "$OPTION" == "stop" ]; then
 elif [ "$OPTION" == "status" ]; then
     lxc list 
     lxc info $CONTAINER_NAME
-
+elif [ "$OPTION" == "logs" ]; then
+    lxc exec $CONTAINER_NAME  -- tail -f /tmp/app.log
+    
 elif [ "$OPTION" == "delete" ]; then
     lxc delete $CONTAINER_NAME
     lxc list 
