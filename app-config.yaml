@@ -3,6 +3,7 @@ package_update: true
 packages:
   - python3
   - python3-pip
+  - python-vlc
 
 write_files:
   - path: /etc/systemd/system/python-radio-app.service
@@ -12,8 +13,9 @@ write_files:
       After=network.target
 
       [Service]
-      # Zwróć uwagę na ścieżkę /mnt/app/run-radio-service.sh
-      ExecStart=/mnt/app/run-radio-service.sh
+      # Zwróć uwagę na ścieżkę /mnt/app/app.py
+      ExecStart=/usr/bin/python3 /mnt/app/app.py
+
       Restart=always
       User=root
 
