@@ -1,0 +1,27 @@
+#cloud-config
+package_update: true
+packages:
+  - python3
+
+write_files:
+  - path: /etc/systemd/system/python-app.service
+    content: |
+      [Unit]
+      Description=Aplikacja z hosta
+      After=network.target
+
+      [Service]
+      # Zwróć uwagę na ścieżkę /mnt/app/app.py
+      ExecStart=/usr/bin/python3 /mnt/app/app.py
+      Restart=always
+      User=root
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - systemctl daemon-reload
+  - systemctl enable python-app.service
+  # Nie startujemy usługi od razu, bo folder /mnt/app pojawi się za chwilę
+  # Pętla czekająca na pojawienie się pliku z hosta
+  - [ sh, -c, "until [ -f /mnt/app/app.py ]; do sleep 2; done && systemctl start python-app.service" ]

@@ -44,3 +44,32 @@ lxc delete my-lxc-radio-automat-1
 
 
 ```
+## separatew cloud init from code 
+
+```
+
+lxc init ubuntu:24.04 my-lxc-radio-automat-1 --config=user.user-data="$(cat app-config.yaml)"
+lxc list 
+lxc config device add my-lxc-radio-automat-1 moj-kod disk source=$HOME/git/py-radio path=/mnt/app
+lxc list 
+
+
+lxc config show  my-lxc-radio-automat-1
+
+lxc start my-lxc-radio-automat-1
+lxc list 
+
+lxc exec my-lxc-radio-automat-1  -- cloud-init status --wait
+
+
+
+lxc exec my-lxc-radio-automat-1 -- systemctl status python-app.service
+
+
+lxc exec my-lxc-radio-automat-1 -- journalctl -u python-app.service
+
+
+lxc exec my-lxc-radio-automat-1  -- tail -f /tmp/app.log
+
+
+```
