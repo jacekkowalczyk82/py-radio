@@ -1,2 +1,2 @@
-python-vlc
-requests
+# python-vlc  <-- installed via apt python3-vlc
+# requests    <-- installed via apt python3-restless or python3-requests
