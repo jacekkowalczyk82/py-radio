@@ -73,3 +73,18 @@ lxc exec my-lxc-radio-automat-1  -- tail -f /tmp/app.log
 
 
 ```
+
+## deploy.sh
+
+```
+chmod 755 deploy.sh
+./deploy.sh init 
+# it will also start the container
+
+# additional operations
+
+./deploy.sh stop
+./deploy.sh start
+./deploy.sh status
+./deploy.sh delete
+```
