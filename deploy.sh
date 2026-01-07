@@ -20,7 +20,7 @@ lxc config device add my-lxc-radio-automat-1 pulse-socket disk source=/run/user/
 lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
 
 # 3. Add GPU/Audio device access (Standard for sound)
-lxc config device add my-lxc-radio-automat-1 snd unix-char path=/dev/snd
+lxc config device add my-lxc-radio-automat-1 passthrough-snd unix-char source=/dev/snd
 
 lxc list 
 
@@ -60,7 +60,7 @@ elif [ "$OPTION" == "logs" ]; then
     lxc exec $CONTAINER_NAME  -- tail -f /tmp/app.log
 elif [ "$OPTION" == "bash" ]; then
     lxc exec $CONTAINER_NAME  -- /bin/bash
-    
+
 elif [ "$OPTION" == "delete" ]; then
     lxc delete $CONTAINER_NAME
     lxc list 
