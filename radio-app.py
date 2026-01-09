@@ -3,6 +3,7 @@ import time
 import sys
 import logging
 import json
+import os
 from configparser import ConfigParser
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
@@ -118,7 +119,8 @@ def get_radio_control_message_from_queue(config):
 
 if __name__ == "__main__":
     
-    CONFIG = read_config(".config/py-radio/config.ini")
+    config_path = os.path.expanduser("~/.config/py-radio/config.ini")
+    CONFIG = read_config(config_path)
 
     VLC_args = ['--no-video', '-vvv']
     logger.info("Inicjalizacja instancji VLC...")
