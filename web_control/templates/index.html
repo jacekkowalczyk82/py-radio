@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,11 @@
     <!-- Google Fonts for Premium Look -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>Radio Control</h1>
+            <h1>Py-Radio Control by Jacek Kowalczyk and Gemini</h1>
             <div class="status-indicator" id="status-indicator">Ready</div>
         </header>
 
@@ -42,11 +44,13 @@
                 <div class="card-icon">WNET</div>
                 <h3>WNET</h3>
             </div>
-            <div class="station-card" data-name="Radio Republika" data-url="https://stream.radiotvrepublika.pl:8100/mp3">
+            <div class="station-card" data-name="Radio Republika"
+                data-url="https://stream.radiotvrepublika.pl:8100/mp3">
                 <div class="card-icon">REP</div>
                 <h3>Republika</h3>
             </div>
-            <div class="station-card" data-name="Anty Radio" data-url="http://redir.atmcdn.pl/sc/o2/Eurozet/live/antyradio.livx">
+            <div class="station-card" data-name="Anty Radio"
+                data-url="http://redir.atmcdn.pl/sc/o2/Eurozet/live/antyradio.livx">
                 <div class="card-icon">ANTY</div>
                 <h3>Anty Radio</h3>
             </div>
@@ -54,15 +58,16 @@
                 <div class="card-icon">ZET</div>
                 <h3>Radio ZET</h3>
             </div>
-             <div class="station-card" data-name="ESKA Lodz" data-url="http://ic1.smcdn.pl/2100-1.aac">
+            <div class="station-card" data-name="ESKA Lodz" data-url="http://ic1.smcdn.pl/2100-1.aac">
                 <div class="card-icon">ESKA</div>
                 <h3>ESKA Łódź</h3>
             </div>
-             <div class="station-card" data-name="ZLOTE PRZEBOJE" data-url="https://radiostream.pl/tuba8918-1.mp3">
+            <div class="station-card" data-name="ZLOTE PRZEBOJE" data-url="https://radiostream.pl/tuba8918-1.mp3">
                 <div class="card-icon">ZŁOTE</div>
                 <h3>Złote Przeboje</h3>
             </div>
-             <div class="station-card" data-name="PLUS Lodz" data-url="https://liveradio.timesa.pl/4100-1.aac/playlist.m3u8">
+            <div class="station-card" data-name="PLUS Lodz"
+                data-url="https://liveradio.timesa.pl/4100-1.aac/playlist.m3u8">
                 <div class="card-icon">PLUS</div>
                 <h3>Radio Plus</h3>
             </div>
@@ -71,4 +76,5 @@
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>

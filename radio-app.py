@@ -21,9 +21,44 @@ CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# Konfiguracja logowania (będzie widoczne w journalctl)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("RadioApp")
 
-def control_radio(player, name, url, volume, action):
+def get_aws_session(config):
+    import boto3
+    profile_name = config.get("radio.aws.profile")
+    region_name = config.get("radio.aws.region")
+    
+    if profile_name:
+        return boto3.Session(profile_name=profile_name, region_name=region_name)
+    else:
+        return boto3.Session(region_name=region_name)
+
+def synthesize_announcement(text, config):
+    if not text:
+        return None
+        
+    try:
+        session = get_aws_session(config)
+        polly = session.client("polly")
+        
+        response = polly.synthesize_speech(
+            Text=text,
+            OutputFormat="mp3",
+            VoiceId="Maja" # Polish voice
+        )
+        
+        output_path = "/tmp/announcement.mp3"
+        with open(output_path, "wb") as f:
+            f.write(response["AudioStream"].read())
+            
+        return output_path
+    except Exception as e:
+        logger.error(f"Polly error: {e}")
+        return None
+
+def control_radio(player, name, url, volume, action, config=None):
     # Parametry dla VLC:
     # --no-video: nie szukaj ekranu
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
@@ -32,9 +67,30 @@ def control_radio(player, name, url, volume, action):
     if action == 'play':
         
         logger.info(f"Playing {name} at {url}")
+
+        # use txt to audio service or lib to say what radio will be started 
+        
         if not instance:
             logger.error("NIE UDALO SIE zainicjalizowac libvlc! Sprawdz biblioteki systemowe.")
             return
+
+        # Announcement
+        if config and name:
+            logger.info("Generating announcement...")
+            mp3_path = synthesize_announcement(f"Radio: {name}", config)
+            if mp3_path:
+                logger.info(f"Playing announcement: {mp3_path}")
+                media_ann = instance.media_new(mp3_path)
+                player.set_media(media_ann)
+                player.play()
+                
+                # Wait for announcement to finish
+                time.sleep(1) # Wait for state to change to playing
+                while True:
+                    state = player.get_state()
+                    if state == vlc.State.Ended or state == vlc.State.Error:
+                        break
+                    time.sleep(0.1)
 
         media = instance.media_new(url)
         player.set_media(media)
@@ -95,18 +151,9 @@ def read_config(config_file_path):
 
 def get_radio_control_message_from_queue(config):
     logger.debug("Getting radio control message from queue")
-    # use boto3 only when there is enabled integration with AWS SQS 
-    import boto3
     
-    profile_name = config.get("radio.aws.profile")
-    region_name = config.get("radio.aws.region")
-    
-    if profile_name:
-        logger.debug(f"Using AWS profile: {profile_name}")
-        session = boto3.Session(profile_name=profile_name, region_name=region_name)
-        sqs = session.resource('sqs')
-    else:
-        sqs = boto3.resource('sqs', region_name=region_name)
+    session = get_aws_session(config)
+    sqs = session.resource('sqs')
 
     queue_name = config.get("radio.control.queue.name")
     logger.debug(f"Queue name: {queue_name}")
@@ -152,7 +199,7 @@ if __name__ == "__main__":
 
     # Przykladowy strumien (możesz zmienic na wlasny)
     RADIO_URL = DEFAULT_STATION_RMF_FM  
-    control_radio(player, "Radio RMF FM", RADIO_URL,100,'play')
+    control_radio(player, "Radio RMF FM", RADIO_URL,100,'play', CONFIG)
 
     # tor testing only 
     # pause for 1 minute
@@ -168,6 +215,6 @@ if __name__ == "__main__":
                 control_message = json.loads(message_string)
                 logger.debug(f"Control message: {control_message}")
                 if previous_control_message != control_message:
-                    control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'])
+                    control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'], CONFIG)
                     previous_control_message = control_message.copy()
         time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY)
