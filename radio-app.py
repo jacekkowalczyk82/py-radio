@@ -64,21 +64,21 @@ def control_radio(player, url,volume, action):
 
 def read_config(config_file_path):
     config_parser = ConfigParser()
-    print(config_parser.sections())
+    logger.debug(config_parser.sections())
     # with open(config_file_path) as config_file:
     #     config_parser.read_file(config_file)
     config_parser.read(config_file_path)
-    print(config_parser.sections())
-    print(config_parser["default"])
-    print(dict(config_parser["default"]))
+    logger.debug(config_parser.sections())
+    logger.debug(config_parser["default"])
+    logger.debug(dict(config_parser["default"]))
     config = dict(config_parser["default"])
 
     
     if "aws" in config_parser.sections():
-        print(dict(config_parser["aws"]))
+        logger.debug(dict(config_parser["aws"]))
         config.update(config_parser["aws"])
     
-    print(config)
+    logger.debug(config)
     return config
 
 def get_radio_control_message_from_queue(config):
