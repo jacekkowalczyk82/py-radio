@@ -1,0 +1,41 @@
+#cloud-config
+package_update: true
+packages:
+  - python3
+  - python3-pip
+  - python3-flask
+  - python3-boto3
+  - awscli
+
+users:
+  - name: radio
+    groups: [audio, video]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+write_files:
+  - path: /etc/systemd/system/python-web-control.service
+    content: |
+      [Unit]
+      Description=Radio Web Control Panel
+      After=network.target
+
+      [Service]
+      User=radio
+      Group=radio
+      # WorkingDirectory must be where the app is mounted
+      WorkingDirectory=/mnt/web_control
+      ExecStart=/usr/bin/python3 /mnt/web_control/app.py
+      Restart=always
+      Environment=HOME=/home/radio
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  # Ensure permissions on mounted directories (though LXC mounts usually handle this, ensuring ownership is good)
+  # Waiting for mount is tricky in cloud-init, service handles start time
+  - systemctl daemon-reload
+  - systemctl enable python-web-control.service
+  # Wait for mount and start
+  - [ sh, -c, "until [ -f /mnt/web_control/app.py ]; do sleep 2; done && systemctl start python-web-control.service" ]

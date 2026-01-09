@@ -65,7 +65,11 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"play\",\"name\":\"ZLOTE PRZEBOJE\",\"station\":\"https://radiostream.pl/tuba8918-1.mp3\",\"volume\":\"100\"}"
 
 # PLUS Lodz https://liveradio.timesa.pl/4100-1.aac/playlist.m3u8
+
 aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"play\",\"name\":\"PLUS Lodz\",\"station\":\"https://liveradio.timesa.pl/4100-1.aac/playlist.m3u8\",\"volume\":\"100\"}"
+
+# Melo radio http://ml04.cdn.eurozet.pl/mel-ldz.mp3
+aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"play\",\"name\":\"Melo Radio\",\"station\":\"http://ml04.cdn.eurozet.pl/mel-ldz.mp3\",\"volume\":\"100\"}"
 
 
 ```
