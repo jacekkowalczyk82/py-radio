@@ -7,8 +7,12 @@ import os
 from configparser import ConfigParser
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
-POLSKIE_RADIO_PR3 = "http://stream.polskieradio.pl/pr3"
-DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
+ANTY_RADIO = "http://redir.atmcdn.pl/sc/o2/Eurozet/live/antyradio.livx"
+RADIO_WNET = "http://audio.radiownet.pl:8000/stream64"
+RADIO_ZET = "http://redir.atmcdn.pl/sc/o2/Eurozet/live/audio.livx"
+RADIO_PR24 = "http://stream3.polskieradio.pl:8080/"
+
+# DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

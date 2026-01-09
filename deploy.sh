@@ -47,7 +47,7 @@ lxc exec $CONTAINER_NAME -- systemctl status python-radio-app.service
 echo "Checking logs"
 echo "Press Ctrl+C to exit"
 
-lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service
+lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service -f 
 
 }
 
@@ -66,7 +66,7 @@ elif [ "$OPTION" == "status" ]; then
     lxc list 
     lxc info $CONTAINER_NAME
 elif [ "$OPTION" == "logs" ]; then
-    lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service
+    lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service -f 
     
 elif [ "$OPTION" == "bash" ]; then
     lxc exec $CONTAINER_NAME  -- /bin/bash
