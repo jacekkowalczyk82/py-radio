@@ -65,6 +65,9 @@ elif [ "$OPTION" == "status" ]; then
     lxc info $CONTAINER_NAME
 elif [ "$OPTION" == "logs" ]; then
     lxc exec $CONTAINER_NAME  -- tail -f /tmp/app.log
+
+    lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service
+    
 elif [ "$OPTION" == "bash" ]; then
     lxc exec $CONTAINER_NAME  -- /bin/bash
 
