@@ -80,6 +80,11 @@ elif [ "$OPTION" == "reset" ]; then
     lxc delete $CONTAINER_NAME
     lxc list
     init
+elif [ "$OPTION" == "restart" ]; then
+    lxc stop $CONTAINER_NAME
+    lxc list
+    lxc start $CONTAINER_NAME
+    lxc list
     
 fi 
 
