@@ -12,7 +12,7 @@ lxc init ubuntu:24.04 $CONTAINER_NAME --config=user.user-data="$(cat app-config.
 lxc list 
 lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/git/py-radio path=/mnt/app
 
-lxc config device add $CONTAINER_NAME config-from-host disk source=$HOME/git/py-radio/secrets/aws path=/home/radio/aws
+lxc config device add $CONTAINER_NAME config-from-host disk source=$HOME/git/py-radio/secrets/.aws path=/home/radio/.aws
 
 # 1. Pass the PulseAudio socket
 lxc config device add $CONTAINER_NAME pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
