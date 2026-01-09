@@ -118,10 +118,12 @@ def get_radio_control_message_from_queue(config):
         message = messages[0]
          # Print out the body 
         logger.debug(f"Received message on {queue_name}: {message.body}")
-
+        body = message.body
         # Let the queue know that the message is processed
         message.delete()
-        return message.body
+        logger.debug(f"Message deleted from queue: {queue_name}")
+        logger.debug(f"Message body: {body}")
+        return body
         
     else:
         logger.debug("No messages in queue")
@@ -153,7 +155,9 @@ if __name__ == "__main__":
         message_string = get_radio_control_message_from_queue(CONFIG)
         if message_string:
             if message_string:
+                logger.debug(f"Message string: {message_string}")
                 control_message = json.loads(message_string)
+                logger.debug(f"Control message: {control_message}")
                 if previous_control_message != control_message:
                     control_radio(player, control_message['station'], control_message['volume'], control_message['action'])
                     previous_control_message = control_message.copy()
