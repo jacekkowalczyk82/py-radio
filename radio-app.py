@@ -77,8 +77,12 @@ def control_radio(player, name, url, volume, action, config=None):
         # Announcement
         if config and name:
             logger.info("Generating announcement...")
+            
+            # Set volume before playing announcement
+            player.audio_set_volume(int(volume))
+            
             mp3_path = synthesize_announcement(f"Radio: {name}", config)
-            if mp3_path:
+            if mp3_path and os.path.exists(mp3_path):
                 logger.info(f"Playing announcement: {mp3_path}")
                 media_ann = instance.media_new(mp3_path)
                 player.set_media(media_ann)
@@ -86,18 +90,24 @@ def control_radio(player, name, url, volume, action, config=None):
                 
                 # Wait for announcement to finish
                 time.sleep(1) # Wait for state to change to playing
+                wait_count = 0 
                 while True:
                     state = player.get_state()
                     if state == vlc.State.Ended or state == vlc.State.Error:
                         break
                     time.sleep(0.1)
+                    wait_count += 1
+                    if wait_count > 100: # 10s timeout
+                         logger.warning("Announcement timeout")
+                         break
+            else:
+                 logger.warning("Announcement file not generated.")
         else:
-            logger.error("No config or name provided. - Announcement not generated.")
-            return
+            logger.warning("No config or name provided - Announcement skipped.")
 
         media = instance.media_new(url)
         player.set_media(media)
-        player.audio_set_volume(100)
+        player.audio_set_volume(int(volume))
 
         logger.info(f"Proba odtworzenia strumienia: {url}")
         
