@@ -2,6 +2,7 @@ import vlc
 import time
 import sys
 import logging
+import json
 from configparser import ConfigParser
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"

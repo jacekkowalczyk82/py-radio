@@ -13,7 +13,7 @@ lxc list
 lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/git/py-radio path=/mnt/app
 
 lxc config device add $CONTAINER_NAME aws_config-from-host disk source=$HOME/git/py-radio/secrets/.aws path=/home/radio/.aws
-lxc config device add $CONTAINER_NAME app-config-from-host disk source=$HOME/.config  path=/home/radio/.config
+lxc config device add $CONTAINER_NAME app-config-from-host disk source=$HOME/git/py-radio/.config  path=/home/radio/.config
 # 1. Pass the PulseAudio socket
 lxc config device add $CONTAINER_NAME pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
 
