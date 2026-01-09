@@ -7,6 +7,8 @@ packages:
   - python3-requests
   - pulseaudio-utils
   - vlc
+  - python3-boto3
+  - awscli
 
 users:
   - name: radio
