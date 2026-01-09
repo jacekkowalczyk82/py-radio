@@ -10,14 +10,14 @@ echo "Starting container in interactive mode"
 
 lxc init ubuntu:24.04 $CONTAINER_NAME --config=user.user-data="$(cat app-config.yaml)"
 lxc list 
-lxc config device add $CONTAINER_NAME moj-kod disk source=$HOME/git/py-radio path=/mnt/app
+lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/git/py-radio path=/mnt/app
 
 
 # 1. Pass the PulseAudio socket
-lxc config device add my-lxc-radio-automat-1 pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
+# lxc config device add my-lxc-radio-automat-1 pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
 
 # 2. Pass the Pulse Cookie (Authentication)
-lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
+# lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
 
 # 3. Add GPU/Audio device access (Standard for sound)
 # lxc config device add my-lxc-radio-automat-1 my-sound unix-char path=/dev/snd/controlC0
@@ -25,7 +25,7 @@ lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.con
 # lxc config device add my-lxc-radio-automat-1 audio proxy listen=tcp:0.0.0.0:4713 connect=tcp:127.0.0.1:4713
 
 
-# alsa 
+# ALSA 
 lxc config device add my-lxc-radio-automat-1 alsa-control unix-char path=/dev/snd/controlC0
 lxc config device add my-lxc-radio-automat-1 alsa-pcm unix-char path=/dev/snd/pcmC0D0p
 
