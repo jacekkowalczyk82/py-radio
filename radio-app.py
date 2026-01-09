@@ -14,7 +14,7 @@ DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("RadioApp")
 
-def control_radio(player, url,volume, action):
+def control_radio(player, name, url, volume, action):
     # Parametry dla VLC:
     # --no-video: nie szukaj ekranu
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
@@ -22,7 +22,7 @@ def control_radio(player, url,volume, action):
 
     if action == 'play':
         
-        
+        logger.info(f"Playing {name} at {url}")
         if not instance:
             logger.error("NIE UDALO SIE zainicjalizowac libvlc! Sprawdz biblioteki systemowe.")
             return
@@ -107,8 +107,8 @@ def get_radio_control_message_from_queue(config):
 
     # You can now access identifiers and attributes
     logger.debug(queue.url)
-    logger.debug("DelaySeconds", queue.attributes.get("DelaySeconds"))
-    logger.debug("queue attributes", str(queue.attributes))
+    # logger.debug("DelaySeconds", str(queue.attributes.get("DelaySeconds")))
+    # # logger.debug("queue attributes", str(queue.attributes))
 
     # Process messages by printing out body and optional author name    
     message = None
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     # Przykladowy strumien (możesz zmienic na wlasny)
     RADIO_URL = DEFAULT_STATION_RMF_FM  
-    control_radio(player, RADIO_URL,100,'play')
+    control_radio(player, "Radio RMF FM", RADIO_URL,100,'play')
 
     # tor testing only 
     # pause for 1 minute
@@ -159,6 +159,6 @@ if __name__ == "__main__":
                 control_message = json.loads(message_string)
                 logger.debug(f"Control message: {control_message}")
                 if previous_control_message != control_message:
-                    control_radio(player, control_message['station'], control_message['volume'], control_message['action'])
+                    control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'])
                     previous_control_message = control_message.copy()
         time.sleep(10)

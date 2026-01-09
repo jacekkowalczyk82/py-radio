@@ -32,6 +32,8 @@ Additional operations
 # AWS SQS controlling messages
 
 ```
-aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{'action':'play','station':'http://stream.polskieradio.pl/pr3'}"
+aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"play\",\"name\":\"Radio PR3\",\"station\":\"http://stream.polskieradio.pl/pr3\",\"volume\":\"100\"}"
+
+aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"play\",\"name\":\"Radio RMF FM\",\"station\":\"http://31.192.216.5/rmf_fm\",\"volume\":\"100\"}"
 ```
 
