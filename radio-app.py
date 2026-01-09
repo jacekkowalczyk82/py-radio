@@ -36,26 +36,38 @@ def get_aws_session(config):
         return boto3.Session(region_name=region_name)
 
 def synthesize_announcement(text, config):
+    logger.info(f"Synthesizing announcement for: '{text}'")
     if not text:
+        logger.warning("Text is empty, skipping announcement.")
         return None
         
     try:
         session = get_aws_session(config)
+        logger.debug(f"AWS Session created: region={session.region_name}, profile={session.profile_name}")
+        
         polly = session.client("polly")
+        logger.debug("Polly client created. calling synthesize_speech...")
         
         response = polly.synthesize_speech(
             Text=text,
             OutputFormat="mp3",
             VoiceId="Maja" # Polish voice
         )
+        logger.debug("Polly response received.")
         
         output_path = "/tmp/announcement.mp3"
         with open(output_path, "wb") as f:
             f.write(response["AudioStream"].read())
             
-        return output_path
+        if os.path.exists(output_path):
+            logger.info(f"Announcement saved to {output_path}, size: {os.path.getsize(output_path)} bytes")
+            return output_path
+        else:
+            logger.error("File write appeared to fail - file not found after writing.")
+            return None
+            
     except Exception as e:
-        logger.error(f"Polly error: {e}")
+        logger.error(f"Polly error details: {type(e).__name__}: {e}", exc_info=True)
         return None
 
 def control_radio(player, name, url, volume, action, config=None):
