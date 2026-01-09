@@ -43,7 +43,7 @@ def start_radio(url):
     # --no-video: nie szukaj ekranu
     # --aout=alsa: wymuś wyjście dźwięku przez ALSA
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
-    args = ['--no-video', '--aout=alsa', '--alsa-audio-device=hw:0,0', '-vvv']
+    args = ['--no-video', '-vvv']
     # instance = vlc.Instance('--no-video', '--aout=alsa', '--alsa-audio-device=default')
     
     logger.info("Inicjalizacja instancji VLC...")

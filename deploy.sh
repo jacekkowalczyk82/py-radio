@@ -14,10 +14,10 @@ lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/gi
 
 
 # 1. Pass the PulseAudio socket
-# lxc config device add my-lxc-radio-automat-1 pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
+lxc config device add $CONTAINER_NAME pulse-socket disk source=/run/user/1000/pulse/native path=/mnt/pulse-socket
 
 # 2. Pass the Pulse Cookie (Authentication)
-# lxc config device add my-lxc-radio-automat-1 pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
+lxc config device add $CONTAINER_NAME pulse-cookie disk source=$HOME/.config/pulse/cookie path=/mnt/pulse-cookie
 
 # 3. Add GPU/Audio device access (Standard for sound)
 # lxc config device add my-lxc-radio-automat-1 my-sound unix-char path=/dev/snd/controlC0
@@ -26,8 +26,8 @@ lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/gi
 
 
 # ALSA 
-lxc config device add my-lxc-radio-automat-1 alsa-control unix-char path=/dev/snd/controlC0
-lxc config device add my-lxc-radio-automat-1 alsa-pcm unix-char path=/dev/snd/pcmC0D0p
+# lxc config device add my-lxc-radio-automat-1 alsa-control unix-char path=/dev/snd/controlC0
+# lxc config device add my-lxc-radio-automat-1 alsa-pcm unix-char path=/dev/snd/pcmC0D0p
 
 lxc list 
 

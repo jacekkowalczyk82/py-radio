@@ -37,15 +37,16 @@ write_files:
 
 
       # Key additions for Audio:
-      # Environment=PULSE_SERVER=unix:/mnt/pulse-socket
-      # Environment=PULSE_COOKIE=/mnt/pulse-cookie
-      # Environment=HOME=/home/radio
+      Environment=PULSE_SERVER=unix:/mnt/pulse-socket
+      Environment=PULSE_COOKIE=/mnt/pulse-cookie
+      Environment=HOME=/home/radio
 
       [Install]
       WantedBy=multi-user.target
 
 runcmd:
   - chown -R radio:radio /mnt/app
+  - chmod -R 666 /dev/snd
   - systemctl daemon-reload
   - systemctl enable python-radio-app.service
   # Nie startujemy usługi od razu, bo folder /mnt/app pojawi się za chwilę
