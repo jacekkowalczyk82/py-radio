@@ -10,7 +10,7 @@ POLSKIE_RADIO_PR3 = "http://stream.polskieradio.pl/pr3"
 DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("RadioApp")
 
 def control_radio(player, url,volume, action):
@@ -64,6 +64,7 @@ def control_radio(player, url,volume, action):
         player.stop()
 
 def read_config(config_file_path):
+    logger.debug(f"Reading config from {config_file_path}")
     config_parser = ConfigParser()
     logger.debug(config_parser.sections())
     # with open(config_file_path) as config_file:
