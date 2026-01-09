@@ -49,7 +49,8 @@ def synthesize_announcement(text, config):
         logger.debug("Polly client created. calling synthesize_speech...")
         
         response = polly.synthesize_speech(
-            Text=text,
+            Text=f"<speak><prosody volume='x-loud'>{text}</prosody></speak>",
+            TextType="ssml",
             OutputFormat="mp3",
             VoiceId="Maja" # Polish voice
         )
