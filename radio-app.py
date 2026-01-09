@@ -91,6 +91,9 @@ def control_radio(player, name, url, volume, action, config=None):
                     if state == vlc.State.Ended or state == vlc.State.Error:
                         break
                     time.sleep(0.1)
+        else:
+            logger.error("No config or name provided. - Announcement not generated.")
+            return
 
         media = instance.media_new(url)
         player.set_media(media)
