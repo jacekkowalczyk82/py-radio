@@ -124,7 +124,8 @@ if __name__ == "__main__":
     config_path = os.path.expanduser("~/.config/py-radio/config.ini")
     CONFIG = read_config(config_path)
 
-    VLC_args = ['--no-video', '-vvv']
+    # VLC_args = ['--no-video', '-vvv'] # for debugging VLC player
+    VLC_args = ['--no-video']
     logger.info("Inicjalizacja instancji VLC...")
     instance = vlc.Instance(*VLC_args)
 
