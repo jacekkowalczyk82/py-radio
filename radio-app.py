@@ -38,7 +38,7 @@ def control_radio(player, url,volume, action):
         state = player.get_state()
         if state == vlc.State.Error:
             logger.error("VLC napotkalo blad podczas odtwarzania.")
-            break
+            return
         elif state == vlc.State.Ended:
             logger.info("Strumien zakonczony. Restartuje...")
             player.play()
