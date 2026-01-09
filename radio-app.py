@@ -27,7 +27,7 @@ def start_radio(url):
     player = instance.media_player_new()
     media = instance.media_new(url)
     player.set_media(media)
-    player.set_volume(100)
+    player.audio_set_volume(100)
 
     logger.info(f"Proba odtworzenia strumienia: {url}")
     
