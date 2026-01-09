@@ -88,8 +88,14 @@ def get_radio_control_message_from_queue(config):
     logger.debug("Getting radio control message from queue")
     # use boto3 only when there is enabled integration with AWS SQS 
     import boto3
-    # Get the service resource
-    sqs = boto3.resource('sqs')
+    
+    profile_name = config.get("radio.aws.profile")
+    if profile_name:
+        logger.debug(f"Using AWS profile: {profile_name}")
+        session = boto3.Session(profile_name=profile_name)
+        sqs = session.resource('sqs')
+    else:
+        sqs = boto3.resource('sqs')
 
     queue_name = config.get("radio.control.queue.name")
     logger.debug(f"Queue name: {queue_name}")
