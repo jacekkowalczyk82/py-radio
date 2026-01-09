@@ -12,6 +12,8 @@ RADIO_WNET = "http://audio.radiownet.pl:8000/stream64"
 RADIO_ZET = "http://redir.atmcdn.pl/sc/o2/Eurozet/live/audio.livx"
 RADIO_PR24 = "http://stream3.polskieradio.pl:8080/"
 
+CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS = 60
+
 # DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
@@ -151,7 +153,7 @@ if __name__ == "__main__":
 
     # tor testing only 
     # pause for 1 minute
-    time.sleep(60)
+    time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS)
     
 
     previous_control_message = None
@@ -165,4 +167,4 @@ if __name__ == "__main__":
                 if previous_control_message != control_message:
                     control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'])
                     previous_control_message = control_message.copy()
-        time.sleep(10)
+        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS)
