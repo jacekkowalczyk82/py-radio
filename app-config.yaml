@@ -31,7 +31,7 @@ write_files:
       # Uruchamiamy jako użytkownik radio, nie root!
       User=radio
       Group=radio
-      ExecStart=/usr/bin/python3 /mnt/app/app.py
+      ExecStart=/usr/bin/python3 /mnt/app/radio-app.py
       Restart=always
       Environment=HOME=/home/radio
 
@@ -51,4 +51,4 @@ runcmd:
   - systemctl enable python-radio-app.service
   # Nie startujemy usługi od razu, bo folder /mnt/app pojawi się za chwilę
   # Pętla czekająca na pojawienie się pliku z hosta
-  - [ sh, -c, "until [ -f /mnt/app/app.py ]; do sleep 2; done && systemctl start python-radio-app.service" ]
+  - [ sh, -c, "until [ -f /mnt/app/radio-app.py ]; do sleep 2; done && systemctl start python-radio-app.service" ]

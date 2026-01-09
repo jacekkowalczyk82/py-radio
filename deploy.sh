@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME="my-lxc-radio-automat-1"
+CONTAINER_NAME="my-lxc-radio"
 
 OPTION=$1
 
-if [ "$OPTION" == "init" ]; then
+function init {
 
-echo "Starting container in interactive mode"
+echo "Building, configuring and starting container for the first time"
 
 lxc init ubuntu:24.04 $CONTAINER_NAME --config=user.user-data="$(cat app-config.yaml)"
 lxc list 
@@ -43,14 +43,15 @@ lxc exec $CONTAINER_NAME  -- cloud-init status --wait
 
 lxc exec $CONTAINER_NAME -- systemctl status python-radio-app.service
 
+echo "Checking logs"
+echo "Press Ctrl+C to exit"
 
 lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service
 
+}
 
-echo "Checking logs"
-echo "Press Ctrl+C to exit"
-lxc exec $CONTAINER_NAME  -- tail -f /tmp/app.log
-
+if [ "$OPTION" == "init" ]; then
+    init
 elif [ "$OPTION" == "start" ]; then
     lxc start $CONTAINER_NAME
     lxc list 
@@ -64,8 +65,6 @@ elif [ "$OPTION" == "status" ]; then
     lxc list 
     lxc info $CONTAINER_NAME
 elif [ "$OPTION" == "logs" ]; then
-    lxc exec $CONTAINER_NAME  -- tail -f /tmp/app.log
-
     lxc exec $CONTAINER_NAME -- journalctl -u python-radio-app.service
     
 elif [ "$OPTION" == "bash" ]; then
@@ -74,5 +73,12 @@ elif [ "$OPTION" == "bash" ]; then
 elif [ "$OPTION" == "delete" ]; then
     lxc delete $CONTAINER_NAME
     lxc list 
+elif [ "$OPTION" == "reset" ]; then
+    lxc stop $CONTAINER_NAME
+    lxc list
+    lxc delete $CONTAINER_NAME
+    lxc list
+    init
+    
 fi 
 
