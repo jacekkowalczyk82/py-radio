@@ -14,6 +14,9 @@ RADIO_PR24 = "http://stream3.polskieradio.pl:8080/"
 
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS = 60
 
+# for testing only
+CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
+
 # DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
@@ -167,4 +170,4 @@ if __name__ == "__main__":
                 if previous_control_message != control_message:
                     control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'])
                     previous_control_message = control_message.copy()
-        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS)
+        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY)

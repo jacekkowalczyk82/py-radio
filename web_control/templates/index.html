@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Control Center</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Google Fonts for Premium Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Radio Control</h1>
+            <div class="status-indicator" id="status-indicator">Ready</div>
+        </header>
+
+        <section class="controls-section">
+            <div class="main-controls">
+                <button id="btn-stop" class="control-btn stop-btn">
+                    <span class="icon">⏹</span> STOP
+                </button>
+                <div class="volume-control">
+                    <label for="volume-slider">Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="100" value="100">
+                    <span id="volume-value">100%</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="stations-grid">
+            <!-- Stations will be generated here, but for now hardcoded based on user list -->
+            <div class="station-card" data-name="Radio RMF FM" data-url="http://31.192.216.5/rmf_fm">
+                <div class="card-icon">RMF</div>
+                <h3>RMF FM</h3>
+            </div>
+            <div class="station-card" data-name="Polskie Radio 24" data-url="http://stream3.polskieradio.pl:8080/">
+                <div class="card-icon">PR24</div>
+                <h3>PR 24</h3>
+            </div>
+            <div class="station-card" data-name="WNET" data-url="http://audio.radiownet.pl:8000/stream64">
+                <div class="card-icon">WNET</div>
+                <h3>WNET</h3>
+            </div>
+            <div class="station-card" data-name="Radio Republika" data-url="https://stream.radiotvrepublika.pl:8100/mp3">
+                <div class="card-icon">REP</div>
+                <h3>Republika</h3>
+            </div>
+            <div class="station-card" data-name="Anty Radio" data-url="http://redir.atmcdn.pl/sc/o2/Eurozet/live/antyradio.livx">
+                <div class="card-icon">ANTY</div>
+                <h3>Anty Radio</h3>
+            </div>
+            <div class="station-card" data-name="ZET" data-url="http://redir.atmcdn.pl/sc/o2/Eurozet/live/audio.livx">
+                <div class="card-icon">ZET</div>
+                <h3>Radio ZET</h3>
+            </div>
+             <div class="station-card" data-name="ESKA Lodz" data-url="http://ic1.smcdn.pl/2100-1.aac">
+                <div class="card-icon">ESKA</div>
+                <h3>ESKA Łódź</h3>
+            </div>
+             <div class="station-card" data-name="ZLOTE PRZEBOJE" data-url="https://radiostream.pl/tuba8918-1.mp3">
+                <div class="card-icon">ZŁOTE</div>
+                <h3>Złote Przeboje</h3>
+            </div>
+             <div class="station-card" data-name="PLUS Lodz" data-url="https://liveradio.timesa.pl/4100-1.aac/playlist.m3u8">
+                <div class="card-icon">PLUS</div>
+                <h3>Radio Plus</h3>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
