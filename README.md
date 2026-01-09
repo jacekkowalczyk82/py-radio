@@ -28,3 +28,10 @@ Additional operations
 ./deploy.sh bash
 ./deploy.sh delete
 ```
+
+# AWS SQS controlling messages
+
+```
+aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{'action':'play','station':'http://stream.polskieradio.pl/pr3'}"
+```
+

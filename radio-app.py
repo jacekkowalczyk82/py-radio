@@ -2,6 +2,7 @@ import vlc
 import time
 import sys
 import logging
+from configparser import ConfigParser
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
 POLSKIE_RADIO_PR3 = "http://stream.polskieradio.pl/pr3"
@@ -11,47 +12,134 @@ DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("RadioApp")
 
-def start_radio(url):
+def control_radio(player, url,volume, action):
     # Parametry dla VLC:
     # --no-video: nie szukaj ekranu
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
-    args = ['--no-video', '-vvv']
     
-    logger.info("Inicjalizacja instancji VLC...")
-    instance = vlc.Instance(*args)
-    
-    if not instance:
-        logger.error("NIE UDALO SIE zainicjalizowac libvlc! Sprawdz biblioteki systemowe.")
-        return
 
-    player = instance.media_player_new()
-    media = instance.media_new(url)
-    player.set_media(media)
-    player.audio_set_volume(100)
+    if action == 'play':
+        
+        
+        if not instance:
+            logger.error("NIE UDALO SIE zainicjalizowac libvlc! Sprawdz biblioteki systemowe.")
+            return
 
-    logger.info(f"Proba odtworzenia strumienia: {url}")
-    
-    if player.play() == -1:
-        logger.error("Blad podczas proby odtworzenia strumienia.")
-        return
+        media = instance.media_new(url)
+        player.set_media(media)
+        player.audio_set_volume(100)
 
-    # Petla monitorujaca status
-    try:
-        while True:
-            state = player.get_state()
-            if state == vlc.State.Error:
-                logger.error("VLC napotkalo blad podczas odtwarzania.")
-                break
-            elif state == vlc.State.Ended:
-                logger.info("Strumien zakonczony. Restartuje...")
-                player.play()
-            
-            time.sleep(5)
-    except KeyboardInterrupt:
-        logger.info("Zamykanie aplikacji...")
+        logger.info(f"Proba odtworzenia strumienia: {url}")
+        
+        if player.play() == -1:
+            logger.error("Blad podczas proby odtworzenia strumienia.")
+            return
+
+        state = player.get_state()
+        if state == vlc.State.Error:
+            logger.error("VLC napotkalo blad podczas odtwarzania.")
+            break
+        elif state == vlc.State.Ended:
+            logger.info("Strumien zakonczony. Restartuje...")
+            player.play()
+
+        # # Petla monitorujaca status
+        # try:
+        #     while True:
+        #         state = player.get_state()
+        #         if state == vlc.State.Error:
+        #             logger.error("VLC napotkalo blad podczas odtwarzania.")
+        #             break
+        #         elif state == vlc.State.Ended:
+        #             logger.info("Strumien zakonczony. Restartuje...")
+        #             player.play()
+                
+        #         time.sleep(5)
+        # except KeyboardInterrupt:
+        #     logger.info("Zamykanie aplikacji...")
+        #     player.stop()
+    elif action == 'stop':
+        logger.info("Stop playing...")
         player.stop()
 
+def read_config(config_file_path):
+    config_parser = ConfigParser()
+    print(config_parser.sections())
+    # with open(config_file_path) as config_file:
+    #     config_parser.read_file(config_file)
+    config_parser.read(config_file_path)
+    print(config_parser.sections())
+    print(config_parser["default"])
+    print(dict(config_parser["default"]))
+    config = dict(config_parser["default"])
+
+    
+    if "aws" in config_parser.sections():
+        print(dict(config_parser["aws"]))
+        config.update(config_parser["aws"])
+    
+    print(config)
+    return config
+
+def get_radio_control_message_from_queue(config):
+    # use boto3 only when there is enabled integration with AWS SQS 
+    import boto3
+    # Get the service resource
+    sqs = boto3.resource('sqs')
+
+    queue_name = config.get("radio.control.queue.name")
+
+    # Get the queue. This returns an SQS.Queue instance
+    queue = sqs.get_queue_by_name(QueueName=queue_name)
+
+    # You can now access identifiers and attributes
+    print(queue.url)
+    print("DelaySeconds", queue.attributes.get("DelaySeconds"))
+    print("queue attributes", str(queue.attributes))
+
+    # Process messages by printing out body and optional author name    
+    message = None
+    messages = queue.receive_messages()
+    if len(messages) > 0:
+        print(f"There should be some message on queue: {queue_name}")
+        message = messages[0]
+         # Print out the body 
+        print(f"Received message on {queue_name}: {message.body}")
+
+        # Let the queue know that the message is processed
+        message.delete()
+        return message.body
+        
+    else:
+        print("No messages in queue")
+        return None  
+
 if __name__ == "__main__":
+    
+    CONFIG = read_config(".config/py-radio/config.ini")
+
+    VLC_args = ['--no-video', '-vvv']
+    logger.info("Inicjalizacja instancji VLC...")
+    instance = vlc.Instance(*VLC_args)
+
+    player = instance.media_player_new()
+
     # Przykladowy strumien (możesz zmienic na wlasny)
     RADIO_URL = DEFAULT_STATION_RMF_FM  
-    start_radio(RADIO_URL)
+    control_radio(player, RADIO_URL,100,'play')
+
+    # tor testing only 
+    # pause for 1 minute
+    time.sleep(60)
+    
+
+    previous_control_message = None
+    while True:
+        message_string = get_radio_control_message_from_queue(CONFIG)
+        if message_string:
+            if message_string:
+                control_message = json.loads(message_string)
+                if previous_control_message != control_message:
+                    control_radio(player, control_message['station'], control_message['volume'], control_message['action'])
+                    previous_control_message = control_message.copy()
+        time.sleep(10)
