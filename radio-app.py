@@ -90,12 +90,14 @@ def get_radio_control_message_from_queue(config):
     import boto3
     
     profile_name = config.get("radio.aws.profile")
+    region_name = config.get("radio.aws.region")
+    
     if profile_name:
         logger.debug(f"Using AWS profile: {profile_name}")
-        session = boto3.Session(profile_name=profile_name)
+        session = boto3.Session(profile_name=profile_name, region_name=region_name)
         sqs = session.resource('sqs')
     else:
-        sqs = boto3.resource('sqs')
+        sqs = boto3.resource('sqs', region_name=region_name)
 
     queue_name = config.get("radio.control.queue.name")
     logger.debug(f"Queue name: {queue_name}")
