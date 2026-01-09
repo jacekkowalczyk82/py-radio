@@ -1,30 +1,3 @@
-
-# import time
-# import requests
-# import vlc # pip install python-vlc
-# import socket
-
-# DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
-# DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
-
-
-# hostname = socket.gethostname()
-# print(f"Radio Python na kontenerze {hostname} wystartowała!")
-# # Prosta pętla, aby proces nie zginął (np. udajemy serwer)
-
-# instance = vlc.Instance('--no-video', '--aout=alsa')
-# player = instance.media_player_new()
-# # player = vlc.MediaPlayer()
-# player.audio_set_volume(100)
-# player.set_mrl(DEFAULT_STATION_RMF_FM)
-# player.play()
-
-# while True:
-#     print (f"Radio is working ... {time.ctime()} \n")
-#     with open("/tmp/app.log", "a") as f:
-#         f.write(f"Radio is working... {time.ctime()}\n")
-#     time.sleep(10)
-
 import vlc
 import time
 import sys
@@ -41,10 +14,8 @@ logger = logging.getLogger("RadioApp")
 def start_radio(url):
     # Parametry dla VLC:
     # --no-video: nie szukaj ekranu
-    # --aout=alsa: wymuś wyjście dźwięku przez ALSA
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
     args = ['--no-video', '-vvv']
-    # instance = vlc.Instance('--no-video', '--aout=alsa', '--alsa-audio-device=default')
     
     logger.info("Inicjalizacja instancji VLC...")
     instance = vlc.Instance(*args)
