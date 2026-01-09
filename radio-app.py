@@ -85,6 +85,7 @@ def read_config(config_file_path):
     return config
 
 def get_radio_control_message_from_queue(config):
+    logger.debug("Getting radio control message from queue")
     # use boto3 only when there is enabled integration with AWS SQS 
     import boto3
     # Get the service resource
