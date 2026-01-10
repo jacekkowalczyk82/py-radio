@@ -20,6 +20,8 @@ function init {
     # Init container with config
     lxc init ubuntu:24.04 $CONTAINER_NAME --config=user.user-data="$(cat web-config.yaml)"
     
+    lxc config set $CONTAINER_NAME boot.autostart true
+    
     # Mount Source Code (Web Control)
     lxc config device add $CONTAINER_NAME source-code disk source=$PROJECT_ROOT/web_control path=/mnt/web_control
     
