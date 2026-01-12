@@ -25,6 +25,9 @@ function init {
     # Mount Source Code (Web Control)
     lxc config device add $CONTAINER_NAME source-code disk source=$PROJECT_ROOT/web_control path=/mnt/web_control
     
+    # Mount messaging.py (Shared module)
+    lxc config device add $CONTAINER_NAME messaging-module disk source=$PROJECT_ROOT/messaging.py path=/mnt/messaging.py
+    
     # Mount AWS Secrets (Host secrets -> Container secrets)
     lxc config device add $CONTAINER_NAME aws_secrets disk source=$PROJECT_ROOT/secrets/.aws path=/home/radio/.aws
     
