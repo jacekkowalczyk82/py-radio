@@ -15,6 +15,8 @@ RADIO_PR24 = "http://stream3.polskieradio.pl:8080/"
 
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS = 60
 
+CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ = 2
+
 # for testing only
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
 
@@ -229,4 +231,4 @@ if __name__ == "__main__":
                 except Exception as e:
                     logger.error(f"Error processing message: {e}")
                     
-        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY)
+        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ)
