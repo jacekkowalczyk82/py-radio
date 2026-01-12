@@ -139,21 +139,6 @@ def control_radio(player, name, url, volume, action, config=None):
             logger.info("Strumien zakonczony. Restartuje...")
             player.play()
 
-        # # Petla monitorujaca status
-        # try:
-        #     while True:
-        #         state = player.get_state()
-        #         if state == vlc.State.Error:
-        #             logger.error("VLC napotkalo blad podczas odtwarzania.")
-        #             break
-        #         elif state == vlc.State.Ended:
-        #             logger.info("Strumien zakonczony. Restartuje...")
-        #             player.play()
-                
-        #         time.sleep(5)
-        # except KeyboardInterrupt:
-        #     logger.info("Zamykanie aplikacji...")
-        #     player.stop()
     elif action == 'stop':
         logger.info("Stop playing...")
         player.stop()
