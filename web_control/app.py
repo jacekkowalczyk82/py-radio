@@ -4,39 +4,42 @@ import logging
 import boto3
 from flask import Flask, render_template, request, jsonify
 
+import sys
+from configparser import ConfigParser
+
+# Add parent directory to path to import messaging
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from messaging import MessagingFactory
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("WebControl")
 
+def read_config():
+    config_path = os.path.expanduser("~/.config/py-radio/config.ini")
+    logger.info(f"Reading config from {config_path}")
+    
+    config_parser = ConfigParser()
+    config_parser.read(config_path)
+    
+    config = dict(config_parser["default"]) if "default" in config_parser else {}
+    
+    if "aws" in config_parser.sections():
+        config.update(config_parser["aws"])
+        
+    if "rabbitmq" in config_parser.sections():
+        config.update(config_parser["rabbitmq"])
+        
+    return config
+
+# Load config once at startup
+CONFIG = read_config()
+
 app = Flask(__name__)
 
-# AWS SQS Configuration (Hardcoded based on user request/config)
-# In a real app, this should come from config file
-QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue"
-REGION_NAME = "us-east-2"
-PROFILE_NAME = "jacekmq" # Matches the profile used in radio-app
-
-def send_sqs_message(action, station_name=None, station_url=None, volume=100):
-    try:
-        session = boto3.Session(profile_name=PROFILE_NAME, region_name=REGION_NAME)
-        sqs = session.client('sqs')
-        
-        message_body = {
-            "action": action,
-            "name": station_name or "",
-            "station": station_url or "",
-            "volume": str(volume)
-        }
-        
-        response = sqs.send_message(
-            QueueUrl=QUEUE_URL,
-            MessageBody=json.dumps(message_body)
-        )
-        logger.info(f"Message sent: {response.get('MessageId')}")
-        return True, response.get('MessageId')
-    except Exception as e:
-        logger.error(f"Failed to send message: {e}")
-        return False, str(e)
+def send_message(action, station_name=None, station_url=None, volume=100):
+    producer = MessagingFactory.get_producer(CONFIG)
+    return producer.send_message(action, station_name, station_url, volume)
 
 @app.route('/')
 def index():
@@ -53,7 +56,7 @@ def control():
     if not action:
         return jsonify({"status": "error", "message": "Action is required"}), 400
         
-    success, result = send_sqs_message(action, station_name, station_url, volume)
+    success, result = send_message(action, station_name, station_url, volume)
     
     if success:
         return jsonify({"status": "success", "message_id": result}), 200

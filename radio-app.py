@@ -5,6 +5,7 @@ import logging
 import json
 import os
 from configparser import ConfigParser
+from messaging import MessagingFactory
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
 ANTY_RADIO = "http://redir.atmcdn.pl/sc/o2/Eurozet/live/antyradio.livx"
@@ -173,43 +174,13 @@ def read_config(config_file_path):
         config.update(config_parser["aws"])
     
     logger.debug(config)
+    
+    if "rabbitmq" in config_parser.sections():
+         config.update(config_parser["rabbitmq"])
+
     return config
 
-def get_radio_control_message_from_queue(config):
-    logger.debug("Getting radio control message from queue")
-    
-    session = get_aws_session(config)
-    sqs = session.resource('sqs')
 
-    queue_name = config.get("radio.control.queue.name")
-    logger.debug(f"Queue name: {queue_name}")
-
-    # Get the queue. This returns an SQS.Queue instance
-    queue = sqs.get_queue_by_name(QueueName=queue_name)
-
-    # You can now access identifiers and attributes
-    logger.debug(queue.url)
-    # logger.debug("DelaySeconds", str(queue.attributes.get("DelaySeconds")))
-    # # logger.debug("queue attributes", str(queue.attributes))
-
-    # Process messages by printing out body and optional author name    
-    message = None
-    messages = queue.receive_messages()
-    if len(messages) > 0:
-        logger.debug(f"There should be some message on queue: {queue_name}")
-        message = messages[0]
-         # Print out the body 
-        logger.debug(f"Received message on {queue_name}: {message.body}")
-        body = message.body
-        # Let the queue know that the message is processed
-        message.delete()
-        logger.debug(f"Message deleted from queue: {queue_name}")
-        logger.debug(f"Message body: {body}")
-        return body
-        
-    else:
-        logger.debug("No messages in queue")
-        return None  
 
 if __name__ == "__main__":
     
@@ -233,14 +204,29 @@ if __name__ == "__main__":
     
 
     previous_control_message = None
+    
+    consumer = MessagingFactory.get_consumer(CONFIG)
+    
     while True:
-        message_string = get_radio_control_message_from_queue(CONFIG)
-        if message_string:
-            if message_string:
-                logger.debug(f"Message string: {message_string}")
-                control_message = json.loads(message_string)
-                logger.debug(f"Control message: {control_message}")
-                if previous_control_message != control_message:
-                    control_radio(player, control_message['name'], control_message['station'], control_message['volume'], control_message['action'], CONFIG)
-                    previous_control_message = control_message.copy()
+        messages = consumer.receive_messages()
+        if messages:
+            for message in messages:
+                logger.debug(f"Received message: {message.body}")
+                message_string = message.body
+                
+                try:
+                    control_message = json.loads(message_string)
+                    logger.debug(f"Control message: {control_message}")
+                    
+                    if previous_control_message != control_message:
+                        control_radio(player, control_message.get('name'), control_message.get('station'), control_message.get('volume'), control_message.get('action'), CONFIG)
+                        previous_control_message = control_message.copy()
+                        
+                    # Delete/Ack message after successful processing
+                    message.delete()
+                    logger.debug("Message processed and deleted/acked.")
+                    
+                except Exception as e:
+                    logger.error(f"Error processing message: {e}")
+                    
         time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY)
