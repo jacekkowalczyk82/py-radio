@@ -6,6 +6,8 @@ packages:
   - python3-flask
   - python3-boto3
   - awscli
+  - python3-pika
+  
 
 users:
   - name: radio

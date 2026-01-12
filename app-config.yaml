@@ -9,6 +9,7 @@ packages:
   - vlc
   - python3-boto3
   - awscli
+  - python3-pika
 
 users:
   - name: radio
