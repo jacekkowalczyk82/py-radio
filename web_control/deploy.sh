@@ -66,6 +66,10 @@ elif [ "$OPTION" == "delete" ]; then
 elif [ "$OPTION" == "restart" ]; then
     lxc restart $CONTAINER_NAME
     lxc exec $CONTAINER_NAME -- systemctl restart python-web-control.service
+elif [ "$OPTION" == "reset" ]; then
+    lxc delete $CONTAINER_NAME --force
+    
+    init
 else
     echo "Usage: $0 {init|start|stop|restart|status|logs|bash|delete}"
 fi
