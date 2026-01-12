@@ -12,6 +12,8 @@ lxc init ubuntu:24.04 $CONTAINER_NAME --config=user.user-data="$(cat app-config.
 lxc list 
 
 lxc config set $CONTAINER_NAME boot.autostart true
+lxc config set $CONTAINER_NAME boot.autostart.delay 20
+
 lxc config device add $CONTAINER_NAME shared-code-from-host disk source=$HOME/git/py-radio path=/mnt/app
 
 lxc config device add $CONTAINER_NAME aws_config-from-host disk source=$HOME/git/py-radio/secrets/.aws path=/home/radio/.aws
