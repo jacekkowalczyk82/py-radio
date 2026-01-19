@@ -3,6 +3,7 @@ package_update: true
 packages:
   - python3
   - python3-pip
+  - python3-vlc
   - python3-requests
   - pulseaudio-utils
   - vlc
@@ -47,7 +48,6 @@ write_files:
       WantedBy=multi-user.target
 
 runcmd:
-  - pip3 install python-vlc --break-system-packages
   - chown -R radio:radio /mnt/app
   - chmod -R 666 /dev/snd
   - systemctl daemon-reload
