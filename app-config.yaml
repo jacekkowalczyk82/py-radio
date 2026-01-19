@@ -34,7 +34,7 @@ write_files:
       # Uruchamiamy jako użytkownik radio, nie root!
       User=radio
       Group=radio
-      ExecStart=/usr/bin/python3 /mnt/app/radio-app.py
+      ExecStart=/usr/bin/python3 /mnt/app/radio-app.py --basic
       Restart=always
       Environment=HOME=/home/radio
 
