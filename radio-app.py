@@ -20,6 +20,8 @@ CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ = 2
 # for testing only
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
 
+BASIC_MODE=False
+
 # DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
 # Konfiguracja logowania (będzie widoczne w journalctl)
@@ -91,7 +93,7 @@ def control_radio(player, name, url, volume, action, config=None):
             return
 
         # Announcement
-        if config and name:
+        if config and name and not BASIC_MODE:
             logger.info("Generating announcement...")
             
             # Set volume before playing announcement
@@ -119,7 +121,7 @@ def control_radio(player, name, url, volume, action, config=None):
             else:
                  logger.warning("Announcement file not generated.")
         else:
-            logger.warning("No config or name provided - Announcement skipped.")
+            logger.warning("No config or name provided or BASIC_MODE - Announcement skipped.")
 
         media = instance.media_new(url)
         player.set_media(media)
@@ -171,7 +173,16 @@ def read_config(config_file_path):
 
 if __name__ == "__main__":
     
-    config_path = os.path.expanduser("~/.config/py-radio/config.ini")
+    # reading sys args
+
+    if len(sys.argv) > 1:
+        options = sys.argv[1]
+        if options == "--basic" or options == "-b":
+            BASIC_MODE = True
+            
+    else:
+        BASIC_MODE = False
+    
     CONFIG = read_config(config_path)
 
     # VLC_args = ['--no-video', '-vvv'] # for debugging VLC player
@@ -189,31 +200,31 @@ if __name__ == "__main__":
     # pause for 1 minute
     time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS)
     
-
-    previous_control_message = None
-    
-    consumer = MessagingFactory.get_consumer(CONFIG)
-    
-    while True:
-        messages = consumer.receive_messages()
-        if messages:
-            for message in messages:
-                logger.debug(f"Received message: {message.body}")
-                message_string = message.body
-                
-                try:
-                    control_message = json.loads(message_string)
-                    logger.debug(f"Control message: {control_message}")
+    if not BASIC_MODE: 
+        previous_control_message = None
+        
+        consumer = MessagingFactory.get_consumer(CONFIG)
+        
+        while True:
+            messages = consumer.receive_messages()
+            if messages:
+                for message in messages:
+                    logger.debug(f"Received message: {message.body}")
+                    message_string = message.body
                     
-                    if previous_control_message != control_message:
-                        control_radio(player, control_message.get('name'), control_message.get('station'), control_message.get('volume'), control_message.get('action'), CONFIG)
-                        previous_control_message = control_message.copy()
+                    try:
+                        control_message = json.loads(message_string)
+                        logger.debug(f"Control message: {control_message}")
                         
-                    # Delete/Ack message after successful processing
-                    message.delete()
-                    logger.debug("Message processed and deleted/acked.")
-                    
-                except Exception as e:
-                    logger.error(f"Error processing message: {e}")
-                    
-        time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ)
+                        if previous_control_message != control_message:
+                            control_radio(player, control_message.get('name'), control_message.get('station'), control_message.get('volume'), control_message.get('action'), CONFIG)
+                            previous_control_message = control_message.copy()
+                            
+                        # Delete/Ack message after successful processing
+                        message.delete()
+                        logger.debug("Message processed and deleted/acked.")
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing message: {e}")
+                        
+            time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ)
