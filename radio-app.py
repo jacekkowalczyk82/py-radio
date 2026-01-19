@@ -20,7 +20,8 @@ CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ = 2
 # for testing only
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
 
-BASIC_MODE=False
+# in BASIC MODE start only DEFAULT RMF FM station
+BASIC_MODE = False
 
 # DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
@@ -172,7 +173,7 @@ def read_config(config_file_path):
 
 
 if __name__ == "__main__":
-    
+    config_path = os.path.expanduser("~/.config/py-radio/config.ini")
     # reading sys args
 
     if len(sys.argv) > 1:
