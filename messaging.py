@@ -207,12 +207,139 @@ class RabbitMQProducer(MessageProducer):
             return False, str(e)
 
 
+class MQTTMessageWrapper:
+    def __init__(self, topic, payload):
+        self.topic = topic
+        self.body = payload.decode("utf-8")
+
+    def delete(self):
+        # MQTT does not require an acknowledgement at the application queue level.
+        pass
+
+
+class MQTTConsumer(MessageConsumer):
+    def __init__(self, config):
+        import paho.mqtt.client as mqtt
+
+        self.config = config
+        self.host = config.get("radio.mqtt.host", "localhost")
+        self.port = int(config.get("radio.mqtt.port", 1883))
+        self.keepalive = int(config.get("radio.mqtt.keepalive", 60))
+        self.topic = config.get(
+            "radio.control.queue.name",
+            config.get("radio.mqtt.topic", "test/radio-control"),
+        )
+        self.qos = int(config.get("radio.mqtt.qos", 1))
+        self.user = config.get("radio.mqtt.user")
+        self.password = config.get("radio.mqtt.password")
+        self._pending_messages = []
+
+        try:
+            self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
+        except (AttributeError, TypeError):
+            self.client = mqtt.Client()
+
+        if self.user:
+            self.client.username_pw_set(self.user, self.password)
+
+        self.client.on_message = self._on_message
+        self.connection = None
+
+    def _on_message(self, client, userdata, message):
+        self._pending_messages.append(
+            MQTTMessageWrapper(message.topic, message.payload)
+        )
+
+    def _connect(self):
+        if self.connection is not None:
+            return
+
+        try:
+            self.client.connect(self.host, self.port, self.keepalive)
+            self.client.subscribe(self.topic, qos=self.qos)
+            self.connection = True
+        except Exception as e:
+            logger.error(f"MQTT connection failed: {e}")
+            self.connection = None
+
+    def receive_messages(self):
+        self._connect()
+        if self.connection is None:
+            return []
+
+        try:
+            self.client.loop(timeout=1.0)
+        except Exception as e:
+            logger.error(f"MQTT receive failed: {e}")
+            self.connection = None
+            return []
+
+        messages = self._pending_messages
+        self._pending_messages = []
+        return messages
+
+    def delete_message(self, message):
+        message.delete()
+
+
+class MQTTProducer(MessageProducer):
+    def __init__(self, config):
+        import paho.mqtt.client as mqtt
+
+        self.config = config
+        self.host = config.get("radio.mqtt.host", "localhost")
+        self.port = int(config.get("radio.mqtt.port", 1883))
+        self.keepalive = int(config.get("radio.mqtt.keepalive", 60))
+        self.topic = config.get(
+            "radio.control.queue.name",
+            config.get("radio.mqtt.topic", "test/radio-control"),
+        )
+        self.qos = int(config.get("radio.mqtt.qos", 1))
+        self.user = config.get("radio.mqtt.user")
+        self.password = config.get("radio.mqtt.password")
+
+        try:
+            self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
+        except (AttributeError, TypeError):
+            self.client = mqtt.Client()
+
+        if self.user:
+            self.client.username_pw_set(self.user, self.password)
+
+    def send_message(self, action, name, station, volume):
+        message_body = {
+            "action": action,
+            "name": name or "",
+            "station": station or "",
+            "volume": str(volume),
+        }
+
+        try:
+            self.client.connect(self.host, self.port, self.keepalive)
+            result = self.client.publish(
+                self.topic,
+                json.dumps(message_body),
+                qos=self.qos,
+            )
+            result.wait_for_publish(timeout=5.0)
+            self.client.disconnect()
+
+            if result.rc != 0:
+                return False, str(result.rc)
+            return True, "sent"
+        except Exception as e:
+            logger.error(f"MQTT Send failed: {e}")
+            return False, str(e)
+
+
 class MessagingFactory:
     @staticmethod
     def get_consumer(config):
         provider = config.get("radio.control.queue.provider", "aws")
         if provider == "rabbitmq":
             return RabbitMQConsumer(config)
+        elif provider == "mqtt":
+            return MQTTConsumer(config)
         else:
             return SQSConsumer(config)
 
@@ -221,5 +348,7 @@ class MessagingFactory:
         provider = config.get("radio.control.queue.provider", "aws")
         if provider == "rabbitmq":
             return RabbitMQProducer(config)
+        elif provider == "mqtt":
+            return MQTTProducer(config)
         else:
             return SQSProducer(config)

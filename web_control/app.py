@@ -29,6 +29,9 @@ def read_config():
         
     if "rabbitmq" in config_parser.sections():
         config.update(config_parser["rabbitmq"])
+
+    if "mqtt" in config_parser.sections():
+        config.update(config_parser["mqtt"])
         
     return config
 

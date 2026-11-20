@@ -74,3 +74,7 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 
 ```
 
+
+## DEV and runtime on linux without containers with MQTT
+
+* Conda env: `conda activate py-radio-env-312`
