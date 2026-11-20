@@ -33,6 +33,7 @@ Additional operations
 
 http://www.emsoft.ct8.pl/strumienie.php
 
+
 ```
 aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/347779256781/py-radio-control-queue --message-body "{\"action\":\"stop\", \"name\":\"\", \"station\":\"\", \"volume\":\"0\"}"
 
@@ -74,6 +75,12 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 
 ```
 
+## Additional supported stations
+
+* [Eska Rock](https://emsoft.ct8.pl/inne/time.m3u?id=5990)
+* [Radio Niepokalanów](http://88.199.169.10:8004/listen.pls)
+* [Radio Parada](http://stream4.nadaje.com:15274/live.m3u)
+* [Radio Żak](http://www.radio.pionier.net.pl/stream.pls?radio=radiozak)
 
 ## DEV and runtime on linux without containers with MQTT
 

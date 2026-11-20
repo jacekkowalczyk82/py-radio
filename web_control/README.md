@@ -1,4 +1,4 @@
-# deve env for web control
+# dev env for web control
 
 ```
 conda create -n "dev-web-control" python=3.12
