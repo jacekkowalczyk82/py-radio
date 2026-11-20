@@ -13,15 +13,16 @@ RADIO_WNET = "http://audio.radiownet.pl:8000/stream64"
 RADIO_ZET = "http://redir.atmcdn.pl/sc/o2/Eurozet/live/audio.livx"
 RADIO_PR24 = "http://stream3.polskieradio.pl:8080/"
 
-CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS = 60
+CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS = 10
 
-CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ = 2
+CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_MQ = 2
 
 # for testing only
 CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_TESTING_ONLY = 10
 
-# in BASIC MODE start only DEFAULT RMF FM station
-BASIC_MODE = False
+# in RMF_ONLY_MODE start only DEFAULT RMF FM station
+RMF_ONLY_MODE = False
+ENABLE_ANNOUNCEMENTS = False # requires polly and aws credentials and config 
 
 # DEFAULT_STATION_1001 = "http://streaming.radio.pl/1001.pls"
 
@@ -94,7 +95,7 @@ def control_radio(player, name, url, volume, action, config=None):
             return
 
         # Announcement
-        if config and name and not BASIC_MODE:
+        if config and name and ENABLE_ANNOUNCEMENTS:
             logger.info("Generating announcement...")
             
             # Set volume before playing announcement
@@ -122,7 +123,7 @@ def control_radio(player, name, url, volume, action, config=None):
             else:
                  logger.warning("Announcement file not generated.")
         else:
-            logger.warning("No config or name provided or BASIC_MODE - Announcement skipped.")
+            logger.warning("No config or name provided or RMF_ONLY_MODE - Announcement skipped.")
 
         media = instance.media_new(url)
         player.set_media(media)
@@ -181,11 +182,11 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         options = sys.argv[1]
-        if options == "--basic" or options == "-b":
-            BASIC_MODE = True
+        if options == "--rmf" :
+            RMF_ONLY_MODE = True
             
     else:
-        BASIC_MODE = False
+        RMF_ONLY_MODE = False
     
     CONFIG = read_config(config_path)
 
@@ -203,13 +204,15 @@ if __name__ == "__main__":
     # tor testing only 
     # pause for 1 minute
     time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS)
+    logger.debug("Ready for receiving messages.")
     
-    if not BASIC_MODE: 
+    if not RMF_ONLY_MODE: 
         previous_control_message = None
         
         consumer = MessagingFactory.get_consumer(CONFIG)
         
         while True:
+            # logger.debug("debug...")
             messages = consumer.receive_messages()
             if messages:
                 for message in messages:
@@ -231,4 +234,4 @@ if __name__ == "__main__":
                     except Exception as e:
                         logger.error(f"Error processing message: {e}")
                         
-            time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_RABBITMQ)
+            time.sleep(CHECK_CONTROL_MESSAGE_INTERVAL_SECONDS_MQ)

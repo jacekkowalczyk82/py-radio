@@ -227,7 +227,7 @@ class MQTTConsumer(MessageConsumer):
         self.keepalive = int(config.get("radio.mqtt.keepalive", 60))
         self.topic = config.get(
             "radio.control.queue.name",
-            config.get("radio.mqtt.topic", "test/radio-control"),
+            config.get("radio.mqtt.topic", "mqtt/radio-control"),
         )
         self.qos = int(config.get("radio.mqtt.qos", 1))
         self.user = config.get("radio.mqtt.user")
@@ -292,7 +292,7 @@ class MQTTProducer(MessageProducer):
         self.keepalive = int(config.get("radio.mqtt.keepalive", 60))
         self.topic = config.get(
             "radio.control.queue.name",
-            config.get("radio.mqtt.topic", "test/radio-control"),
+            config.get("radio.mqtt.topic", "mqtt/radio-control"),
         )
         self.qos = int(config.get("radio.mqtt.qos", 1))
         self.user = config.get("radio.mqtt.user")

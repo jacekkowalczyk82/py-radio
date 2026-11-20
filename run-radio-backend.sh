@@ -1,3 +1,4 @@
 #!/usr/bin/env bash 
 
-/usr/bin/python3 ./radio-app.py --basic
+#python3 ./radio-app.py --rmf
+python3 ./radio-app.py

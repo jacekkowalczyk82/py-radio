@@ -78,3 +78,19 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 ## DEV and runtime on linux without containers with MQTT
 
 * Conda env: `conda activate py-radio-env-312`
+
+```
+mkdir -p ~/.config/py-radio/
+cp -v .config/py-radio/config-mqtt.ini ~/.config/py-radio/config.ini
+
+conda activate py-radio-env-312
+
+sudo apt update
+sudo apt install python3-vlc python3-requests pulseaudio-utils vlc mosquitto mosquitto-clients -y
+
+pip install paho-mqtt python-vlc requests 
+
+chmod 755 run-radio-backend.sh
+./run-radio-backend.sh
+
+```
