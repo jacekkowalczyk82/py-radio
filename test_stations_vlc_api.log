@@ -1,0 +1,103 @@
+2026-11-20 11:08:13,429 INFO Starting python-vlc station test; duration=20 seconds.
+2026-11-20 11:08:13,429 INFO Playback diagnostics and answers are logged to /home/jacek/git/py-radio/test_stations_vlc_api.log.
+2026-11-20 11:08:13,455 INFO Station: Eska Rock | URL: https://emsoft.ct8.pl/inne/time.m3u?id=5990
+2026-11-20 11:08:13,455 INFO Starting playback: Eska Rock | https://emsoft.ct8.pl/inne/time.m3u?id=5990
+2026-11-20 11:08:13,456 INFO VLC state for Eska Rock: State.NothingSpecial
+2026-11-20 11:08:13,707 INFO VLC state for Eska Rock: State.Ended
+2026-11-20 11:08:13,707 WARNING VLC reached end of media before the test duration: Eska Rock.
+2026-11-20 11:08:13,709 WARNING Playback status for Eska Rock: ENDED EARLY
+2026-11-20 11:08:13,711 INFO PROMPT: Did you hear Eska Rock? [y=yes / n=no / q=quit]
+2026-11-20 11:08:23,456 INFO ANSWER: n
+2026-11-20 11:08:23,456 INFO RESULT: Eska Rock | ENDED EARLY; NOT HEARD
+2026-11-20 11:08:23,456 INFO Station: Radio Niepokalanów (AAC) | URL: http://88.199.169.10:8004/listen.pls
+2026-11-20 11:08:23,457 INFO Starting playback: Radio Niepokalanów (AAC) | http://88.199.169.10:8004/listen.pls
+2026-11-20 11:08:23,457 INFO VLC state for Radio Niepokalanów (AAC): State.NothingSpecial
+2026-11-20 11:08:23,708 INFO VLC state for Radio Niepokalanów (AAC): State.Opening
+2026-11-20 11:08:43,475 INFO Playback window finished for Radio Niepokalanów (AAC); final VLC state: State.Opening
+2026-11-20 11:08:43,504 INFO PROMPT: Did you hear Radio Niepokalanów (AAC)? [y=yes / n=no / q=quit]
+2026-11-20 11:08:46,430 INFO ANSWER: n
+2026-11-20 11:08:46,431 INFO RESULT: Radio Niepokalanów (AAC) | PLAYED; NOT HEARD
+2026-11-20 11:08:46,431 INFO Station: Radio Niepokalanów (MP3) | URL: http://88.199.169.10:8000/listen.pls
+2026-11-20 11:08:46,432 INFO Starting playback: Radio Niepokalanów (MP3) | http://88.199.169.10:8000/listen.pls
+2026-11-20 11:08:46,433 INFO VLC state for Radio Niepokalanów (MP3): State.NothingSpecial
+2026-11-20 11:08:46,683 INFO VLC state for Radio Niepokalanów (MP3): State.Opening
+2026-11-20 11:09:06,451 INFO Playback window finished for Radio Niepokalanów (MP3); final VLC state: State.Opening
+2026-11-20 11:09:06,491 INFO PROMPT: Did you hear Radio Niepokalanów (MP3)? [y=yes / n=no / q=quit]
+2026-11-20 11:09:09,759 INFO ANSWER: n
+2026-11-20 11:09:09,760 INFO RESULT: Radio Niepokalanów (MP3) | PLAYED; NOT HEARD
+2026-11-20 11:09:09,760 INFO Station: Radio Parada | URL: http://stream4.nadaje.com:15274/live.m3u
+2026-11-20 11:09:09,761 INFO Starting playback: Radio Parada | http://stream4.nadaje.com:15274/live.m3u
+2026-11-20 11:09:09,762 INFO VLC state for Radio Parada: State.NothingSpecial
+2026-11-20 11:09:10,013 INFO VLC state for Radio Parada: State.Ended
+2026-11-20 11:09:10,013 WARNING VLC reached end of media before the test duration: Radio Parada.
+2026-11-20 11:09:10,014 WARNING Playback status for Radio Parada: ENDED EARLY
+2026-11-20 11:09:10,014 INFO PROMPT: Did you hear Radio Parada? [y=yes / n=no / q=quit]
+2026-11-20 11:09:15,311 INFO ANSWER: n
+2026-11-20 11:09:15,313 INFO RESULT: Radio Parada | ENDED EARLY; NOT HEARD
+2026-11-20 11:09:15,313 INFO Station: Radio Żak (OGG) | URL: http://www.radio.pionier.net.pl/stream.pls?radio=radiozak
+2026-11-20 11:09:15,314 INFO Starting playback: Radio Żak (OGG) | http://www.radio.pionier.net.pl/stream.pls?radio=radiozak
+2026-11-20 11:09:15,315 INFO VLC state for Radio Żak (OGG): State.NothingSpecial
+2026-11-20 11:09:15,566 INFO VLC state for Radio Żak (OGG): State.Ended
+2026-11-20 11:09:15,566 WARNING VLC reached end of media before the test duration: Radio Żak (OGG).
+2026-11-20 11:09:15,566 WARNING Playback status for Radio Żak (OGG): ENDED EARLY
+2026-11-20 11:09:15,567 INFO PROMPT: Did you hear Radio Żak (OGG)? [y=yes / n=no / q=quit]
+2026-11-20 11:09:18,557 INFO ANSWER: n
+2026-11-20 11:09:18,558 INFO RESULT: Radio Żak (OGG) | ENDED EARLY; NOT HEARD
+2026-11-20 11:09:18,558 INFO Station: Radio Żak (MP3) | URL: http://ra.man.lodz.pl:8000/radiozak6.mp3.m3u
+2026-11-20 11:09:18,559 INFO Starting playback: Radio Żak (MP3) | http://ra.man.lodz.pl:8000/radiozak6.mp3.m3u
+2026-11-20 11:09:18,560 INFO VLC state for Radio Żak (MP3): State.NothingSpecial
+2026-11-20 11:09:18,810 INFO VLC state for Radio Żak (MP3): State.Ended
+2026-11-20 11:09:18,812 WARNING VLC reached end of media before the test duration: Radio Żak (MP3).
+2026-11-20 11:09:18,813 WARNING Playback status for Radio Żak (MP3): ENDED EARLY
+2026-11-20 11:09:18,816 INFO PROMPT: Did you hear Radio Żak (MP3)? [y=yes / n=no / q=quit]
+2026-11-20 11:09:22,094 INFO ANSWER: n
+2026-11-20 11:09:22,095 INFO RESULT: Radio Żak (MP3) | ENDED EARLY; NOT HEARD
+2026-11-20 11:09:22,103 INFO Station test summary:
+2026-11-20 11:09:22,104 INFO SUMMARY: Eska Rock | ENDED EARLY; NOT HEARD | https://emsoft.ct8.pl/inne/time.m3u?id=5990
+2026-11-20 11:09:22,104 INFO SUMMARY: Radio Niepokalanów (AAC) | PLAYED; NOT HEARD | http://88.199.169.10:8004/listen.pls
+2026-11-20 11:09:22,105 INFO SUMMARY: Radio Niepokalanów (MP3) | PLAYED; NOT HEARD | http://88.199.169.10:8000/listen.pls
+2026-11-20 11:09:22,105 INFO SUMMARY: Radio Parada | ENDED EARLY; NOT HEARD | http://stream4.nadaje.com:15274/live.m3u
+2026-11-20 11:09:22,105 INFO SUMMARY: Radio Żak (OGG) | ENDED EARLY; NOT HEARD | http://www.radio.pionier.net.pl/stream.pls?radio=radiozak
+2026-11-20 11:09:22,105 INFO SUMMARY: Radio Żak (MP3) | ENDED EARLY; NOT HEARD | http://ra.man.lodz.pl:8000/radiozak6.mp3.m3u
+2026-11-20 11:09:22,106 INFO Full test log: /home/jacek/git/py-radio/test_stations_vlc_api.log
+2026-11-20 11:12:37,654 INFO Starting python-vlc station test; duration=20 seconds.
+2026-11-20 11:12:37,655 INFO Playback diagnostics and answers are logged to /home/jacek/git/py-radio/test_stations_vlc_api.log.
+2026-11-20 11:12:37,678 INFO Station: Eska Rock (MP3) | URL: http://ic1.smcdn.pl/5990-1.mp3
+2026-11-20 11:12:37,679 INFO Starting playback: Eska Rock (MP3) | http://ic1.smcdn.pl/5990-1.mp3
+2026-11-20 11:12:37,679 INFO VLC state for Eska Rock (MP3): State.Opening
+2026-11-20 11:12:37,930 INFO VLC state for Eska Rock (MP3): State.Playing
+2026-11-20 11:12:57,696 INFO Playback window finished for Eska Rock (MP3); final VLC state: State.Playing
+2026-11-20 11:12:57,699 INFO PROMPT: Did you hear Eska Rock (MP3)? [y=yes / n=no / q=quit]
+2026-11-20 11:13:00,078 INFO ANSWER: y
+2026-11-20 11:13:00,078 INFO RESULT: Eska Rock (MP3) | PLAYED; HEARD
+2026-11-20 11:13:00,079 INFO Station: Radio Parada | URL: http://stream4.nadaje.com:15274/live
+2026-11-20 11:13:00,079 INFO Starting playback: Radio Parada | http://stream4.nadaje.com:15274/live
+2026-11-20 11:13:00,081 INFO VLC state for Radio Parada: State.Opening
+2026-11-20 11:13:00,582 INFO VLC state for Radio Parada: State.Playing
+2026-11-20 11:13:20,097 INFO Playback window finished for Radio Parada; final VLC state: State.Playing
+2026-11-20 11:13:20,100 INFO PROMPT: Did you hear Radio Parada? [y=yes / n=no / q=quit]
+2026-11-20 11:13:25,229 INFO ANSWER: y
+2026-11-20 11:13:25,230 INFO RESULT: Radio Parada | PLAYED; HEARD
+2026-11-20 11:13:25,230 INFO Station: Radio Żak (OGG) | URL: http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg
+2026-11-20 11:13:25,231 INFO Starting playback: Radio Żak (OGG) | http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg
+2026-11-20 11:13:25,232 INFO VLC state for Radio Żak (OGG): State.NothingSpecial
+2026-11-20 11:13:25,482 INFO VLC state for Radio Żak (OGG): State.Opening
+2026-11-20 11:13:26,233 INFO VLC state for Radio Żak (OGG): State.Playing
+2026-11-20 11:13:45,248 INFO Playback window finished for Radio Żak (OGG); final VLC state: State.Playing
+2026-11-20 11:13:45,251 INFO PROMPT: Did you hear Radio Żak (OGG)? [y=yes / n=no / q=quit]
+2026-11-20 11:13:50,686 INFO ANSWER: y
+2026-11-20 11:13:50,687 INFO RESULT: Radio Żak (OGG) | PLAYED; HEARD
+2026-11-20 11:13:50,687 INFO Station: Radio Żak (MP3) | URL: http://ra.man.lodz.pl:8000/radiozak6.mp3
+2026-11-20 11:13:50,688 INFO Starting playback: Radio Żak (MP3) | http://ra.man.lodz.pl:8000/radiozak6.mp3
+2026-11-20 11:13:50,689 INFO VLC state for Radio Żak (MP3): State.NothingSpecial
+2026-11-20 11:13:50,940 INFO VLC state for Radio Żak (MP3): State.Playing
+2026-11-20 11:14:10,706 INFO Playback window finished for Radio Żak (MP3); final VLC state: State.Playing
+2026-11-20 11:14:10,709 INFO PROMPT: Did you hear Radio Żak (MP3)? [y=yes / n=no / q=quit]
+2026-11-20 11:14:16,012 INFO ANSWER: y
+2026-11-20 11:14:16,014 INFO RESULT: Radio Żak (MP3) | PLAYED; HEARD
+2026-11-20 11:14:16,038 INFO Station test summary:
+2026-11-20 11:14:16,038 INFO SUMMARY: Eska Rock (MP3) | PLAYED; HEARD | http://ic1.smcdn.pl/5990-1.mp3
+2026-11-20 11:14:16,039 INFO SUMMARY: Radio Parada | PLAYED; HEARD | http://stream4.nadaje.com:15274/live
+2026-11-20 11:14:16,039 INFO SUMMARY: Radio Żak (OGG) | PLAYED; HEARD | http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg
+2026-11-20 11:14:16,039 INFO SUMMARY: Radio Żak (MP3) | PLAYED; HEARD | http://ra.man.lodz.pl:8000/radiozak6.mp3
+2026-11-20 11:14:16,040 INFO Full test log: /home/jacek/git/py-radio/test_stations_vlc_api.log

@@ -77,9 +77,9 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 
 ## Additional supported stations
 
-* [Eska Rock](https://emsoft.ct8.pl/inne/time.m3u?id=5990)
-* [Radio Parada](http://stream4.nadaje.com:15274/live.m3u)
-* [Radio Żak](http://www.radio.pionier.net.pl/stream.pls?radio=radiozak)
+* [Eska Rock](http://ic1.smcdn.pl/5990-1.mp3)
+* [Radio Parada](http://stream4.nadaje.com:15274/live)
+* [Radio Żak](http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg)
 
 Radio Niepokalanów is not currently offered in the web app: both its AAC and
 MP3 playlist URLs failed to connect during playback testing. Add it back when a
@@ -87,12 +87,17 @@ working stream URL is available.
 
 ## Testing station playback
 
-Run `python test_stations.py` on the computer connected to the speakers. The script
-plays each station for 20 seconds and asks whether you heard audio. It records
-the prompts and your answers in `test_stations.log`, and VLC diagnostics in
-`test_stations_vlc.log`. It tests the station URLs and alternate MP3
-playlists for Radio Niepokalanów and Radio Żak. You can change the playback
-duration with `--duration`, for example `python test_stations.py --duration 30`.
+Run `python test_stations.py` to test using the VLC command-line player, or
+`python test_stations_vlc.py` to test using the `python-vlc` package directly.
+Run either on the computer connected to the speakers. Both play each station
+for 20 seconds and ask whether you heard audio. The direct API script uses
+direct audio stream URLs rather than playlists; it tests Eska Rock, Radio
+Parada, and the OGG/MP3 streams for Radio Żak. Those URLs were confirmed audible
+in the direct API test. Radio Niepokalanów is omitted
+because its playlist URLs did not connect and no direct stream URL was verified.
+The direct API script logs playback states, prompts, and answers in
+`test_stations_vlc_api.log`. Change the playback duration with `--duration`,
+for example `python test_stations_vlc.py --duration 30`.
 
 ## DEV and runtime on linux without containers with MQTT
 
