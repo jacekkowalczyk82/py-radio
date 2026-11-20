@@ -78,9 +78,21 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 ## Additional supported stations
 
 * [Eska Rock](https://emsoft.ct8.pl/inne/time.m3u?id=5990)
-* [Radio Niepokalanów](http://88.199.169.10:8004/listen.pls)
 * [Radio Parada](http://stream4.nadaje.com:15274/live.m3u)
 * [Radio Żak](http://www.radio.pionier.net.pl/stream.pls?radio=radiozak)
+
+Radio Niepokalanów is not currently offered in the web app: both its AAC and
+MP3 playlist URLs failed to connect during playback testing. Add it back when a
+working stream URL is available.
+
+## Testing station playback
+
+Run `python test_stations.py` on the computer connected to the speakers. The script
+plays each station for 20 seconds and asks whether you heard audio. It records
+the prompts and your answers in `test_stations.log`, and VLC diagnostics in
+`test_stations_vlc.log`. It tests the station URLs and alternate MP3
+playlists for Radio Niepokalanów and Radio Żak. You can change the playback
+duration with `--duration`, for example `python test_stations.py --duration 30`.
 
 ## DEV and runtime on linux without containers with MQTT
 
