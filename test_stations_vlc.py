@@ -9,6 +9,9 @@ from pathlib import Path
 
 
 STATIONS = (
+    ("Program 1", "https://stream11.polskieradio.pl/pr1/pr1.sdp/playlist.m3u8"),
+    ("Program 2", "https://stream12.polskieradio.pl/pr2/pr2.sdp/playlist.m3u8"),
+    ("Program 3", "https://stream13.polskieradio.pl/pr3/pr3.sdp/playlist.m3u8"),
     ("Eska Rock (MP3)", "http://ic1.smcdn.pl/5990-1.mp3"),
     ("Radio Parada", "http://stream4.nadaje.com:15274/live"),
     ("Radio Żak (OGG)", "http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg"),

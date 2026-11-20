@@ -11,6 +11,9 @@ from pathlib import Path
 
 
 STATIONS = (
+    ("Program 1", "https://stream11.polskieradio.pl/pr1/pr1.sdp/playlist.m3u8"),
+    ("Program 2", "https://stream12.polskieradio.pl/pr2/pr2.sdp/playlist.m3u8"),
+    ("Program 3", "https://stream13.polskieradio.pl/pr3/pr3.sdp/playlist.m3u8"),
     ("Eska Rock", "https://emsoft.ct8.pl/inne/time.m3u?id=5990"),
     ("Radio Niepokalanów (AAC)", "http://88.199.169.10:8004/listen.pls"),
     ("Radio Niepokalanów (MP3)", "http://88.199.169.10:8000/listen.pls"),

@@ -77,6 +77,9 @@ aws sqs send-message --queue-url https://sqs.us-east-2.amazonaws.com/34777925678
 
 ## Additional supported stations
 
+* [Program 1](https://stream11.polskieradio.pl/pr1/pr1.sdp/playlist.m3u8)
+* [Program 2](https://stream12.polskieradio.pl/pr2/pr2.sdp/playlist.m3u8)
+* [Program 3](https://stream13.polskieradio.pl/pr3/pr3.sdp/playlist.m3u8)
 * [Eska Rock](http://ic1.smcdn.pl/5990-1.mp3)
 * [Radio Parada](http://stream4.nadaje.com:15274/live)
 * [Radio Żak](http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg)
@@ -91,10 +94,11 @@ Run `python test_stations.py` to test using the VLC command-line player, or
 `python test_stations_vlc.py` to test using the `python-vlc` package directly.
 Run either on the computer connected to the speakers. Both play each station
 for 20 seconds and ask whether you heard audio. The direct API script uses
-direct audio stream URLs rather than playlists; it tests Eska Rock, Radio
-Parada, and the OGG/MP3 streams for Radio Żak. Those URLs were confirmed audible
-in the direct API test. Radio Niepokalanów is omitted
-because its playlist URLs did not connect and no direct stream URL was verified.
+the supplied HLS URLs to test Program 1, Program 2, and Program 3, along with
+direct audio stream URLs for Eska Rock, Radio Parada, and the OGG/MP3 streams
+for Radio Żak. The Radio Polskie streams have not yet been confirmed audible.
+Radio Niepokalanów is omitted because its playlist URLs did not connect and no
+direct stream URL was verified.
 The direct API script logs playback states, prompts, and answers in
 `test_stations_vlc_api.log`. Change the playback duration with `--duration`,
 for example `python test_stations_vlc.py --duration 30`.
