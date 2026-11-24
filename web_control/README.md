@@ -18,6 +18,8 @@ some tracks are still available, the playlist is saved with those tracks and
 the job reports a partial success.
 
 The **Play Local Playlist** tab sends one of the configured local playlist
-filenames to the radio player. Each playlist `.txt` file must be in the radio
-player's `~/Music` directory. Audio paths in each file may be absolute or
-relative to `~/Music`.
+filenames (`local-IMPREZKA.txt`, `local-10-milions.txt`,
+`Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt`, `pyradio_Goralskie.txt`,
+`pyradio_Thompson.txt`, or `pyradio_AI.txt`) to the radio player. Each playlist
+`.txt` file must be in the radio player's `~/Music` directory. Audio paths in
+each file may be absolute or relative to `~/Music`.

@@ -42,6 +42,9 @@ LOCAL_PLAYLIST_FILES = {
     "local-IMPREZKA.txt",
     "local-10-milions.txt",
     "Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt",
+    "pyradio_Goralskie.txt",
+    "pyradio_Thompson.txt",
+    "pyradio_AI.txt",
 }
 
 def download_youtube_playlist(playlist_url, temp_dir):
