@@ -143,6 +143,18 @@
         </section>
 
         <section class="tab-content" id="local-playlists">
+            <section class="local-playlist-controls" aria-label="Local playlist playback controls">
+                <div class="local-playlist-buttons">
+                    <button class="control-btn playback-btn" id="btn-next" type="button">Next</button>
+                    <button class="control-btn playback-btn" id="btn-pause" type="button">Pause</button>
+                    <button class="control-btn playback-btn" id="btn-resume" type="button">Resume</button>
+                </div>
+                <div class="volume-control">
+                    <label for="local-volume-slider">Volume</label>
+                    <input type="range" id="local-volume-slider" min="0" max="100" value="100">
+                    <span id="local-volume-value">100%</span>
+                </div>
+            </section>
             <div class="stations-grid">
                 <div class="station-card local-playlist-card" data-name="IMPREZKA" data-url="local-IMPREZKA.txt">
                     <div class="card-icon">PARTY</div><h3>local-IMPREZKA</h3>

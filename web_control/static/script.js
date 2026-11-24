@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabContents = document.querySelectorAll('.tab-content');
     const playlistForm = document.getElementById('playlist-form');
     const playlistJobStatus = document.getElementById('playlist-job-status');
+    const localVolumeSlider = document.getElementById('local-volume-slider');
+    const localVolumeValue = document.getElementById('local-volume-value');
+    const nextBtn = document.getElementById('btn-next');
+    const pauseBtn = document.getElementById('btn-pause');
+    const resumeBtn = document.getElementById('btn-resume');
     let activePlaylistJob = null;
 
     let currentVolume = 100;
@@ -88,6 +93,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // The current requirements specify: "wybrac stacje, volume level i ewentualnie stop".
         // It implies setting volume is part of choosing station OR independent?
         // Our backend sends volume with every command.
+    });
+
+    localVolumeSlider.addEventListener('input', () => {
+        localVolumeValue.textContent = `${localVolumeSlider.value}%`;
+    });
+
+    localVolumeSlider.addEventListener('change', () => {
+        sendCommand('volume', null, null, localVolumeSlider.value);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        sendCommand('next', null, null, localVolumeSlider.value);
+    });
+
+    pauseBtn.addEventListener('click', () => {
+        sendCommand('pause', null, null, localVolumeSlider.value);
+    });
+
+    resumeBtn.addEventListener('click', () => {
+        sendCommand('resume', null, null, localVolumeSlider.value);
     });
 
     // Stop Button

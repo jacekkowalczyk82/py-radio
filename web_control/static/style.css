@@ -139,6 +139,33 @@ input[type=range]::-webkit-slider-runnable-track {
     gap: 1.5rem;
 }
 
+.local-playlist-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.local-playlist-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.playback-btn {
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--text-primary);
+}
+
+.local-playlist-controls .volume-control {
+    min-width: 240px;
+}
+
 .tabs {
     display: flex;
     flex-wrap: wrap;

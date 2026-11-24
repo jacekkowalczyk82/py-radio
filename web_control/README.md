@@ -23,3 +23,6 @@ filenames (`local-IMPREZKA.txt`, `local-10-milions.txt`,
 `pyradio_Thompson.txt`, or `pyradio_AI.txt`) to the radio player. Each playlist
 `.txt` file must be in the radio player's `~/Music` directory. Audio paths in
 each file may be absolute or relative to `~/Music`.
+
+The local playlist tab also provides next-track, pause, resume, and volume
+controls for the current VLC playback.

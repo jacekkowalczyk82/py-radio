@@ -38,6 +38,8 @@ logger = logging.getLogger("RadioApp")
 
 playlist_stop_event = threading.Event()
 playlist_thread = None
+local_playlist_next_event = None
+local_playlist_active = False
 LOCAL_PLAYLIST_FILES = {
     "local-IMPREZKA.txt",
     "local-10-milions.txt",
@@ -93,8 +95,10 @@ def download_youtube_playlist(playlist_url, temp_dir):
     return list(dict.fromkeys(files))
 
 def play_playlist(player, name, playlist_url, volume, config):
-    global playlist_thread, playlist_stop_event
+    global playlist_thread, playlist_stop_event, local_playlist_active, local_playlist_next_event
 
+    local_playlist_active = False
+    local_playlist_next_event = None
     playlist_stop_event.set()
     player.stop()
     playlist_stop_event = threading.Event()
@@ -164,7 +168,7 @@ def read_local_playlist(playlist_filename):
     return list(dict.fromkeys(audio_files))
 
 def play_local_playlist(player, name, playlist_filename, volume, config):
-    global playlist_thread, playlist_stop_event
+    global playlist_thread, playlist_stop_event, local_playlist_active, local_playlist_next_event
 
     files = read_local_playlist(playlist_filename)
     if not files:
@@ -175,35 +179,46 @@ def play_local_playlist(player, name, playlist_filename, volume, config):
     player.stop()
     playlist_stop_event = threading.Event()
     stop_event = playlist_stop_event
+    next_event = threading.Event()
+    local_playlist_next_event = next_event
+    local_playlist_active = True
 
     def worker():
-        if config.get("play.order", "RANDOM").upper() == "RANDOM":
-            random.shuffle(files)
+        try:
+            if config.get("play.order", "RANDOM").upper() == "RANDOM":
+                random.shuffle(files)
 
-        logger.info("Playing %d local files from playlist %s", len(files), name)
-        player.audio_set_volume(int(volume))
+            logger.info("Playing %d local files from playlist %s", len(files), name)
+            player.audio_set_volume(int(volume))
 
-        for file_name in files:
-            if stop_event.is_set():
-                break
-            logger.info("Playing local playlist file %s", file_name)
-            media = instance.media_new(file_name)
-            player.set_media(media)
-            if player.play() == -1:
-                logger.error("VLC failed to play %s", file_name)
-                continue
-
-            while not stop_event.is_set():
-                state = player.get_state()
-                if state == vlc.State.Ended:
+            for file_name in files:
+                if stop_event.is_set():
                     break
-                if state == vlc.State.Error:
-                    logger.error("VLC playback error for %s", file_name)
-                    break
-                time.sleep(0.1)
+                logger.info("Playing local playlist file %s", file_name)
+                media = instance.media_new(file_name)
+                player.set_media(media)
+                if player.play() == -1:
+                    logger.error("VLC failed to play %s", file_name)
+                    continue
 
-        if not stop_event.is_set():
-            logger.info("Finished local playlist %s", name)
+                while not stop_event.is_set():
+                    if next_event.is_set():
+                        next_event.clear()
+                        player.stop()
+                        break
+                    state = player.get_state()
+                    if state == vlc.State.Ended:
+                        break
+                    if state == vlc.State.Error:
+                        logger.error("VLC playback error for %s", file_name)
+                        break
+                    time.sleep(0.1)
+
+            if not stop_event.is_set():
+                logger.info("Finished local playlist %s", name)
+        finally:
+            if local_playlist_next_event is next_event:
+                local_playlist_active = False
 
     playlist_thread = threading.Thread(target=worker, daemon=True, name="local-playlist")
     playlist_thread.start()
@@ -255,12 +270,16 @@ def synthesize_announcement(text, config):
         return None
 
 def control_radio(player, name, url, volume, action, config=None):
+    global local_playlist_active, local_playlist_next_event
+
     # Parametry dla VLC:
     # --no-video: nie szukaj ekranu
     # -vvv: bardzo gadatliwe logi (przydatne do debugowania dźwięku)
     
 
     if action == 'play':
+        local_playlist_active = False
+        local_playlist_next_event = None
         playlist_stop_event.set()
         player.stop()
 
@@ -323,8 +342,32 @@ def control_radio(player, name, url, volume, action, config=None):
 
     elif action == 'stop':
         logger.info("Stop playing...")
+        local_playlist_active = False
+        local_playlist_next_event = None
         playlist_stop_event.set()
         player.stop()
+    elif action == 'next':
+        if not local_playlist_active or local_playlist_next_event is None:
+            logger.warning("Cannot skip track: no local playlist is playing.")
+            return
+        logger.info("Skipping to the next local playlist file.")
+        local_playlist_next_event.set()
+    elif action == 'pause':
+        logger.info("Pausing playback")
+        player.set_pause(1)
+    elif action == 'resume':
+        logger.info("Resuming playback")
+        player.set_pause(0)
+    elif action == 'volume':
+        try:
+            requested_volume = int(volume)
+        except (TypeError, ValueError):
+            logger.error("Invalid volume value: %s", volume)
+            return
+        if not 0 <= requested_volume <= 100:
+            logger.error("Volume must be between 0 and 100: %s", requested_volume)
+            return
+        player.audio_set_volume(requested_volume)
     elif action == 'play_playlist':
         if not url:
             logger.error("Playlist URL is required.")
