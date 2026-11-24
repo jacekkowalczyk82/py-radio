@@ -2,3 +2,4 @@ boto3
 python-vlc
 pika
 paho-mqtt
+yt-dlp

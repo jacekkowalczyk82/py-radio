@@ -4,6 +4,9 @@ import sys
 import logging
 import json
 import os
+import random
+import subprocess
+import threading
 from configparser import ConfigParser
 from messaging import MessagingFactory
 
@@ -31,6 +34,100 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # Konfiguracja logowania (będzie widoczne w journalctl)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("RadioApp")
+
+playlist_stop_event = threading.Event()
+playlist_thread = None
+
+def download_youtube_playlist(playlist_url, temp_dir):
+    os.makedirs(temp_dir, exist_ok=True)
+
+    filename_process = subprocess.run(
+        ["yt-dlp", "-f", "ba", "--get-filename", "--restrict-filenames", playlist_url],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if filename_process.returncode != 0:
+        logger.error("Failed to read playlist filenames: %s", filename_process.stderr.strip())
+        return []
+
+    filenames = [line.strip() for line in filename_process.stdout.splitlines() if line.strip()]
+    missing = [name for name in filenames if not os.path.exists(os.path.join(temp_dir, name))]
+
+    if missing:
+        logger.info("Downloading %d missing playlist files", len(missing))
+        download_process = subprocess.run(
+            ["yt-dlp", "-f", "ba", "--restrict-filenames", "-P", temp_dir, playlist_url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        if download_process.returncode != 0:
+            logger.error("Playlist download failed: %s", download_process.stderr.strip())
+
+    files = []
+    for name in filenames:
+        path = os.path.join(temp_dir, name)
+        if os.path.isfile(path):
+            files.append(path)
+            continue
+
+        base_name, _ = os.path.splitext(name)
+        matches = [
+            os.path.join(temp_dir, candidate)
+            for candidate in os.listdir(temp_dir)
+            if candidate == name or candidate.startswith(base_name + ".")
+        ]
+        files.extend(sorted(path for path in matches if os.path.isfile(path)))
+
+    logger.debug("Downloaded playlist files: %s", files)
+    return list(dict.fromkeys(files))
+
+def play_playlist(player, name, playlist_url, volume, config):
+    global playlist_thread, playlist_stop_event
+
+    playlist_stop_event.set()
+    player.stop()
+    playlist_stop_event = threading.Event()
+    stop_event = playlist_stop_event
+
+    def worker():
+        temp_dir = os.path.expanduser(
+            os.path.join("~", config.get("playtube.home.temp", "private/music/youtube-dl-temp"))
+        )
+        logger.info("Preparing playlist %s in %s", name, temp_dir)
+        files = download_youtube_playlist(playlist_url, temp_dir)
+
+        if config.get("play.order", "RANDOM").upper() == "RANDOM":
+            random.shuffle(files)
+
+        logger.info("Playing %d files from playlist %s", len(files), name)
+        player.audio_set_volume(int(volume))
+
+        for file_name in files:
+            if stop_event.is_set():
+                break
+            logger.info("Playing playlist file %s", file_name)
+            media = instance.media_new(file_name)
+            player.set_media(media)
+            if player.play() == -1:
+                logger.error("VLC failed to play %s", file_name)
+                continue
+
+            while not stop_event.is_set():
+                state = player.get_state()
+                if state == vlc.State.Ended:
+                    break
+                if state == vlc.State.Error:
+                    logger.error("VLC playback error for %s", file_name)
+                    break
+                time.sleep(0.1)
+
+        if not stop_event.is_set():
+            logger.info("Finished playlist %s", name)
+
+    playlist_thread = threading.Thread(target=worker, daemon=True, name="youtube-playlist")
+    playlist_thread.start()
 
 def get_aws_session(config):
     import boto3
@@ -85,7 +182,9 @@ def control_radio(player, name, url, volume, action, config=None):
     
 
     if action == 'play':
-        
+        playlist_stop_event.set()
+        player.stop()
+
         logger.info(f"Playing {name} at {url}")
 
         # use txt to audio service or lib to say what radio will be started 
@@ -145,7 +244,13 @@ def control_radio(player, name, url, volume, action, config=None):
 
     elif action == 'stop':
         logger.info("Stop playing...")
+        playlist_stop_event.set()
         player.stop()
+    elif action == 'play_playlist':
+        if not url:
+            logger.error("Playlist URL is required.")
+            return
+        play_playlist(player, name or "YouTube playlist", url, volume, config)
 
 def read_config(config_file_path):
     logger.debug(f"Reading config from {config_file_path}")

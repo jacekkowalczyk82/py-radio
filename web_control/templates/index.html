@@ -30,7 +30,13 @@
             </div>
         </section>
 
-        <section class="stations-grid">
+        <nav class="tabs" aria-label="Media source">
+            <button class="tab-btn active" data-tab="radios">Radio</button>
+            <button class="tab-btn" data-tab="playlists">YouTube playlists</button>
+        </nav>
+
+        <section class="tab-content active" id="radios">
+        <div class="stations-grid">
             <!-- Stations will be generated here, but for now hardcoded based on user list -->
             <div class="station-card" data-name="RMF FM" data-url="http://31.192.216.5/rmf_fm">
                 <div class="card-icon">RMF FM</div>
@@ -100,6 +106,24 @@
                 data-url="http://poznan2.radio.pionier.net.pl:8000/pl/radiozak.ogg">
                 <div class="card-icon">ŻAK</div>
                 <h3>Radio Żak</h3>
+            </div>
+        </div>
+        </section>
+
+        <section class="tab-content" id="playlists">
+            <div class="stations-grid">
+                <div class="station-card playlist-card" data-name="audio_sounds" data-url="https://www.youtube.com/playlist?list=PLA9E9F53EEA776D66">
+                    <div class="card-icon">SOUND</div><h3>audio_sounds</h3>
+                </div>
+                <div class="station-card playlist-card" data-name="moja-youtube-music" data-url="https://www.youtube.com/playlist?list=PLpxLTu3yeWT9Vk2FRHMn1_LDY9q2YgVW1">
+                    <div class="card-icon">MUZA</div><h3>moja-youtube-music</h3>
+                </div>
+                <div class="station-card playlist-card" data-name="balkanskie_klimaty" data-url="https://www.youtube.com/playlist?list=PLpxLTu3yeWT_3VrXE87jOrOvKHkCwG3gd">
+                    <div class="card-icon">BAŁK</div><h3>balkanskie_klimaty</h3>
+                </div>
+                <div class="station-card playlist-card" data-name="muzyka_do_pracy" data-url="https://www.youtube.com/playlist?list=PLpxLTu3yeWT95bx6ePXWcBXCeL19rX9s8">
+                    <div class="card-icon">PRACA</div><h3>muzyka_do_pracy</h3>
+                </div>
             </div>
         </section>
     </div>

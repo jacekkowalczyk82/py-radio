@@ -4,8 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const stopBtn = document.getElementById('btn-stop');
     const statusIndicator = document.getElementById('status-indicator');
     const stationCards = document.querySelectorAll('.station-card');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
 
     let currentVolume = 100;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById(button.dataset.tab).classList.add('active');
+        });
+    });
 
     // Volume Slider Logic
     volumeSlider.addEventListener('input', (e) => {
@@ -35,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = card.dataset.name;
             const url = card.dataset.url;
 
-            sendCommand('play', name, url, currentVolume);
+            const action = card.classList.contains('playlist-card') ? 'play_playlist' : 'play';
+            sendCommand(action, name, url, currentVolume);
             updateUIState(card);
         });
     });
