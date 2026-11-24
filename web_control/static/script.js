@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const stationCards = document.querySelectorAll('.station-card');
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
+    const playlistForm = document.getElementById('playlist-form');
+    const playlistJobStatus = document.getElementById('playlist-job-status');
+    let activePlaylistJob = null;
 
     let currentVolume = 100;
 
@@ -17,6 +20,59 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(button.dataset.tab).classList.add('active');
         });
     });
+
+    playlistForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitButton = playlistForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        playlistJobStatus.textContent = 'Starting playlist update...';
+        playlistJobStatus.className = 'playlist-job-status';
+
+        try {
+            const response = await fetch('/api/playlists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: playlistForm.elements.url.value.trim(),
+                    name: playlistForm.elements.name.value.trim()
+                })
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || 'Could not start playlist update.');
+            }
+
+            activePlaylistJob = result.job_id;
+            await monitorPlaylistJob(submitButton);
+        } catch (error) {
+            playlistJobStatus.textContent = error.message;
+            playlistJobStatus.classList.add('error');
+            activePlaylistJob = null;
+            submitButton.disabled = false;
+        }
+    });
+
+    async function monitorPlaylistJob(submitButton) {
+        while (activePlaylistJob) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch(`/api/playlists/${activePlaylistJob}`);
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || 'Could not check playlist update status.');
+            }
+
+            playlistJobStatus.textContent = result.message;
+            if (result.status !== 'running') {
+                if (result.status === 'error') {
+                    playlistJobStatus.classList.add('error');
+                } else {
+                    playlistJobStatus.classList.add('success');
+                }
+                activePlaylistJob = null;
+                submitButton.disabled = false;
+            }
+        }
+    }
 
     // Volume Slider Logic
     volumeSlider.addEventListener('input', (e) => {
@@ -46,7 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = card.dataset.name;
             const url = card.dataset.url;
 
-            const action = card.classList.contains('playlist-card') ? 'play_playlist' : 'play';
+            const action = card.classList.contains('local-playlist-card')
+                ? 'play_local_playlist'
+                : card.classList.contains('playlist-card') ? 'play_playlist' : 'play';
             sendCommand(action, name, url, currentVolume);
             updateUIState(card);
         });

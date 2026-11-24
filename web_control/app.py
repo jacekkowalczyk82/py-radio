@@ -71,28 +71,34 @@ def create_playlist_file(playlist_url, playlist_name):
     os.makedirs(temp_dir, exist_ok=True)
 
     filename_result = subprocess.run(
-        ["yt-dlp", "-f", "ba", "--get-filename", "--restrict-filenames", playlist_url],
+        ["yt-dlp", "--ignore-errors", "-f", "ba", "--get-filename", "--restrict-filenames", playlist_url],
         cwd=temp_dir,
         capture_output=True,
         text=True,
         check=False,
     )
-    if filename_result.returncode:
-        raise RuntimeError(filename_result.stderr.strip() or "Could not read playlist filenames.")
-
     filenames = [line.strip() for line in filename_result.stdout.splitlines() if line.strip()]
     if not filenames:
-        raise RuntimeError("The playlist did not contain any downloadable audio.")
+        details = filename_result.stderr.strip()
+        raise RuntimeError(details or "The playlist did not contain any downloadable audio.")
+    if filename_result.returncode:
+        logger.warning(
+            "yt-dlp could not read every playlist entry; continuing with available filenames: %s",
+            filename_result.stderr.strip(),
+        )
 
     download_result = subprocess.run(
-        ["yt-dlp", "-f", "ba", "--restrict-filenames", playlist_url],
+        ["yt-dlp", "--ignore-errors", "-f", "ba", "--restrict-filenames", playlist_url],
         cwd=temp_dir,
         capture_output=True,
         text=True,
         check=False,
     )
     if download_result.returncode:
-        raise RuntimeError(download_result.stderr.strip() or "Playlist download failed.")
+        logger.warning(
+            "yt-dlp could not download every playlist entry; checking for available files: %s",
+            download_result.stderr.strip(),
+        )
 
     audio_files = []
     for filename in filenames:
@@ -111,7 +117,8 @@ def create_playlist_file(playlist_url, playlist_name):
         audio_files.extend(matching_paths)
 
     if not audio_files:
-        raise RuntimeError("Download finished, but no playlist audio files were found.")
+        details = download_result.stderr.strip() or filename_result.stderr.strip()
+        raise RuntimeError(details or "No playlist audio files were downloaded.")
 
     music_dir = os.path.expanduser("~/Music")
     os.makedirs(music_dir, exist_ok=True)
@@ -127,17 +134,22 @@ def create_playlist_file(playlist_url, playlist_name):
         if os.path.exists(temporary_path):
             os.remove(temporary_path)
 
-    return playlist_path, len(set(audio_files))
+    return playlist_path, len(set(audio_files)), bool(
+        filename_result.returncode or download_result.returncode
+    )
 
 def run_playlist_job(job_id, playlist_url, playlist_name):
     try:
         with playlist_jobs_lock:
             playlist_jobs[job_id]["message"] = "Reading playlist and downloading missing files..."
-        playlist_path, file_count = create_playlist_file(playlist_url, playlist_name)
+        playlist_path, file_count, had_errors = create_playlist_file(playlist_url, playlist_name)
+        message = f"Playlist updated with {file_count} audio files."
+        if had_errors:
+            message += " Some entries were unavailable; downloaded the available files."
         with playlist_jobs_lock:
             playlist_jobs[job_id].update(
                 status="complete",
-                message=f"Playlist updated with {file_count} audio files.",
+                message=message,
                 path=playlist_path,
             )
     except (OSError, RuntimeError, ValueError) as error:
@@ -155,14 +167,21 @@ def create_playlist():
     if not isinstance(data, dict):
         return jsonify({"status": "error", "message": "A JSON request is required."}), 400
 
-    playlist_url = data.get("url", "").strip()
-    playlist_name = data.get("name", "").strip()
+    playlist_url = data.get("url")
+    playlist_name = data.get("name")
+    if not isinstance(playlist_url, str) or not isinstance(playlist_name, str):
+        return jsonify({"status": "error", "message": "Playlist URL and name must be text."}), 400
+    playlist_url = playlist_url.strip()
+    playlist_name = playlist_name.strip()
     if not playlist_url or not playlist_name:
         return jsonify({"status": "error", "message": "Playlist URL and name are required."}), 400
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}", playlist_name):
         return jsonify({"status": "error", "message": "Use only letters, numbers, underscores, and hyphens for the playlist name."}), 400
 
-    parsed_url = urlparse(playlist_url)
+    try:
+        parsed_url = urlparse(playlist_url)
+    except ValueError:
+        return jsonify({"status": "error", "message": "Enter a valid YouTube playlist URL."}), 400
     if (
         parsed_url.scheme != "https"
         or parsed_url.hostname not in {"youtube.com", "www.youtube.com", "music.youtube.com"}

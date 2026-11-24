@@ -8,6 +8,7 @@ import random
 import subprocess
 import threading
 from configparser import ConfigParser
+from urllib.parse import urlparse
 from messaging import MessagingFactory
 
 DEFAULT_STATION_RMF_FM = "http://31.192.216.5/rmf_fm"
@@ -37,6 +38,11 @@ logger = logging.getLogger("RadioApp")
 
 playlist_stop_event = threading.Event()
 playlist_thread = None
+LOCAL_PLAYLIST_FILES = {
+    "local-IMPREZKA.txt",
+    "local-10-milions.txt",
+    "Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt",
+}
 
 def download_youtube_playlist(playlist_url, temp_dir):
     os.makedirs(temp_dir, exist_ok=True)
@@ -127,6 +133,76 @@ def play_playlist(player, name, playlist_url, volume, config):
             logger.info("Finished playlist %s", name)
 
     playlist_thread = threading.Thread(target=worker, daemon=True, name="youtube-playlist")
+    playlist_thread.start()
+
+def read_local_playlist(playlist_filename):
+    if not isinstance(playlist_filename, str) or playlist_filename not in LOCAL_PLAYLIST_FILES:
+        logger.error("Unsupported local playlist: %s", playlist_filename)
+        return []
+
+    playlist_path = os.path.join(os.path.expanduser("~/Music"), playlist_filename)
+    try:
+        with open(playlist_path, encoding="utf-8") as playlist_file:
+            entries = [line.partition("#")[0].strip() for line in playlist_file]
+    except OSError:
+        logger.exception("Could not read local playlist %s", playlist_path)
+        return []
+
+    audio_files = []
+    for entry in entries:
+        if not entry or urlparse(entry).scheme:
+            continue
+        audio_path = entry if os.path.isabs(entry) else os.path.join(os.path.dirname(playlist_path), entry)
+        if os.path.isfile(audio_path):
+            audio_files.append(audio_path)
+        else:
+            logger.warning("Local playlist audio file not found: %s", audio_path)
+
+    return list(dict.fromkeys(audio_files))
+
+def play_local_playlist(player, name, playlist_filename, volume, config):
+    global playlist_thread, playlist_stop_event
+
+    files = read_local_playlist(playlist_filename)
+    if not files:
+        logger.error("No local audio files found for playlist %s", playlist_filename)
+        return
+
+    playlist_stop_event.set()
+    player.stop()
+    playlist_stop_event = threading.Event()
+    stop_event = playlist_stop_event
+
+    def worker():
+        if config.get("play.order", "RANDOM").upper() == "RANDOM":
+            random.shuffle(files)
+
+        logger.info("Playing %d local files from playlist %s", len(files), name)
+        player.audio_set_volume(int(volume))
+
+        for file_name in files:
+            if stop_event.is_set():
+                break
+            logger.info("Playing local playlist file %s", file_name)
+            media = instance.media_new(file_name)
+            player.set_media(media)
+            if player.play() == -1:
+                logger.error("VLC failed to play %s", file_name)
+                continue
+
+            while not stop_event.is_set():
+                state = player.get_state()
+                if state == vlc.State.Ended:
+                    break
+                if state == vlc.State.Error:
+                    logger.error("VLC playback error for %s", file_name)
+                    break
+                time.sleep(0.1)
+
+        if not stop_event.is_set():
+            logger.info("Finished local playlist %s", name)
+
+    playlist_thread = threading.Thread(target=worker, daemon=True, name="local-playlist")
     playlist_thread.start()
 
 def get_aws_session(config):
@@ -251,6 +327,11 @@ def control_radio(player, name, url, volume, action, config=None):
             logger.error("Playlist URL is required.")
             return
         play_playlist(player, name or "YouTube playlist", url, volume, config)
+    elif action == 'play_local_playlist':
+        if not url:
+            logger.error("Local playlist filename is required.")
+            return
+        play_local_playlist(player, name or url, url, volume, config)
 
 def read_config(config_file_path):
     logger.debug(f"Reading config from {config_file_path}")

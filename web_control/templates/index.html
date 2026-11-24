@@ -33,6 +33,8 @@
         <nav class="tabs" aria-label="Media source">
             <button class="tab-btn active" data-tab="radios">Radio</button>
             <button class="tab-btn" data-tab="playlists">YouTube playlists</button>
+            <button class="tab-btn" data-tab="playlist-manager">Download / update</button>
+            <button class="tab-btn" data-tab="local-playlists">Play Local Playlist</button>
         </nav>
 
         <section class="tab-content active" id="radios">
@@ -123,6 +125,33 @@
                 </div>
                 <div class="station-card playlist-card" data-name="muzyka_do_pracy" data-url="https://www.youtube.com/playlist?list=PLpxLTu3yeWT95bx6ePXWcBXCeL19rX9s8">
                     <div class="card-icon">PRACA</div><h3>muzyka_do_pracy</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab-content" id="playlist-manager">
+            <form id="playlist-form" class="playlist-form">
+                <h2>Download or update a YouTube playlist</h2>
+                <label for="playlist-url">YouTube playlist URL</label>
+                <input id="playlist-url" name="url" type="url" placeholder="https://www.youtube.com/playlist?list=..." required>
+                <label for="playlist-name">Playlist name</label>
+                <input id="playlist-name" name="name" type="text" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,99}" maxlength="100" placeholder="my_playlist" required>
+                <p class="form-help">Creates or replaces <code>~/Music/&lt;name&gt;.txt</code> and downloads missing audio into the configured playlist folder.</p>
+                <button class="control-btn playlist-submit" type="submit">Download / update playlist</button>
+                <p id="playlist-job-status" class="playlist-job-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="tab-content" id="local-playlists">
+            <div class="stations-grid">
+                <div class="station-card local-playlist-card" data-name="IMPREZKA" data-url="local-IMPREZKA.txt">
+                    <div class="card-icon">PARTY</div><h3>local-IMPREZKA</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="10-milions" data-url="local-10-milions.txt">
+                    <div class="card-icon">10M</div><h3>local-10-milions</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="Eric Clapton Live at the Royal Albert Hall" data-url="Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt">
+                    <div class="card-icon">CLAPTON</div><h3>Eric-Clapton-Live-at-the-Royal-Albert-Hall</h3>
                 </div>
             </div>
         </section>
