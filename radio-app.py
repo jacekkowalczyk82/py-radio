@@ -455,7 +455,10 @@ if __name__ == "__main__":
                         control_message = json.loads(message_string)
                         logger.debug(f"Control message: {control_message}")
                         
-                        if previous_control_message != control_message:
+                        if (
+                            control_message.get('action') == 'next'
+                            or previous_control_message != control_message
+                        ):
                             control_radio(player, control_message.get('name'), control_message.get('station'), control_message.get('volume'), control_message.get('action'), CONFIG)
                             previous_control_message = control_message.copy()
                             
