@@ -48,6 +48,15 @@ app = Flask(__name__)
 playlist_jobs = {}
 playlist_jobs_lock = threading.Lock()
 
+def is_youtube_playlist_url(playlist_url):
+    parsed_url = urlparse(playlist_url)
+    return (
+        parsed_url.scheme == "https"
+        and parsed_url.hostname in {"youtube.com", "www.youtube.com", "music.youtube.com"}
+        and parsed_url.path in {"/playlist", "/watch"}
+        and bool(parse_qs(parsed_url.query).get("list"))
+    )
+
 def send_message(action, station_name=None, station_url=None, volume=100):
     producer = MessagingFactory.get_producer(CONFIG)
     return producer.send_message(action, station_name, station_url, volume)
@@ -56,13 +65,7 @@ def create_playlist_file(playlist_url, playlist_name):
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}", playlist_name):
         raise ValueError("Playlist name must contain only letters, numbers, underscores, and hyphens.")
 
-    parsed_url = urlparse(playlist_url)
-    if (
-        parsed_url.scheme != "https"
-        or parsed_url.hostname not in {"youtube.com", "www.youtube.com", "music.youtube.com"}
-        or parsed_url.path != "/playlist"
-        or not parse_qs(parsed_url.query).get("list")
-    ):
+    if not is_youtube_playlist_url(playlist_url):
         raise ValueError("Enter a YouTube playlist URL.")
 
     temp_dir = os.path.abspath(os.path.expanduser(os.path.join(
@@ -71,7 +74,10 @@ def create_playlist_file(playlist_url, playlist_name):
     os.makedirs(temp_dir, exist_ok=True)
 
     filename_result = subprocess.run(
-        ["yt-dlp", "--ignore-errors", "-f", "ba", "--get-filename", "--restrict-filenames", playlist_url],
+        [
+            "yt-dlp", "--yes-playlist", "--ignore-errors", "-f", "ba",
+            "--get-filename", "--restrict-filenames", playlist_url,
+        ],
         cwd=temp_dir,
         capture_output=True,
         text=True,
@@ -88,7 +94,10 @@ def create_playlist_file(playlist_url, playlist_name):
         )
 
     download_result = subprocess.run(
-        ["yt-dlp", "--ignore-errors", "-f", "ba", "--restrict-filenames", playlist_url],
+        [
+            "yt-dlp", "--yes-playlist", "--ignore-errors", "-f", "ba",
+            "--restrict-filenames", playlist_url,
+        ],
         cwd=temp_dir,
         capture_output=True,
         text=True,
@@ -179,15 +188,10 @@ def create_playlist():
         return jsonify({"status": "error", "message": "Use only letters, numbers, underscores, and hyphens for the playlist name."}), 400
 
     try:
-        parsed_url = urlparse(playlist_url)
+        valid_playlist_url = is_youtube_playlist_url(playlist_url)
     except ValueError:
         return jsonify({"status": "error", "message": "Enter a valid YouTube playlist URL."}), 400
-    if (
-        parsed_url.scheme != "https"
-        or parsed_url.hostname not in {"youtube.com", "www.youtube.com", "music.youtube.com"}
-        or parsed_url.path != "/playlist"
-        or not parse_qs(parsed_url.query).get("list")
-    ):
+    if not valid_playlist_url:
         return jsonify({"status": "error", "message": "Enter a YouTube playlist URL."}), 400
 
     job_id = uuid.uuid4().hex

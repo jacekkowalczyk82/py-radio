@@ -137,6 +137,36 @@
                     <button class="control-btn playlist-download-btn" type="button">Download / update</button>
                     <p class="playlist-card-status" role="status" aria-live="polite"></p>
                 </div>
+                <div class="station-card playlist-card" data-name="DANCE" data-url="https://youtube.com/playlist?list=PLpxLTu3yeWT_LGLNL95nAOXjRUyKahhv1">
+                    <div class="card-icon">DANCE</div><h3>DANCE</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
+                <div class="station-card playlist-card" data-name="jimTV" data-url="https://www.youtube.com/playlist?list=PLpxLTu3yeWT838-lUGOFUxSuFWa-jyg3h">
+                    <div class="card-icon">JIMTV</div><h3>JimTV</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
+                <div class="station-card playlist-card" data-name="ParniValjak_live_in_Pula" data-url="https://youtube.com/playlist?list=PLy8zbyhSfee2vdMIIPAsePxiwCA9KEX9I&amp;si=ZC0Ry6Q_nsH2IdRU">
+                    <div class="card-icon">PARNI VALJAK</div><h3>ParniValjak_live_in_Pula</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
+                <div class="station-card playlist-card" data-name="Radio_Jacek" data-url="https://www.youtube.com/watch?v=9jjt4OtYpDQ&amp;list=PLpxLTu3yeWT9BJFY0jb1yNVyNY4a8m9G_">
+                    <div class="card-icon">RADIO JACEK</div><h3>Radio_jacek</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
+                <div class="station-card playlist-card" data-name="VintageCafe" data-url="https://www.youtube.com/playlist?list=PLIPaB4hHh2xRpbnMYbrIUPDJAwnREhAbF">
+                    <div class="card-icon">VINTAGE</div><h3>VintageCafe</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
+                <div class="station-card playlist-card" data-name="MyFavouriteCovers" data-url="https://www.youtube.com/playlist?list=PLIPaB4hHh2xTdzJq5ydCPWgqKTRdIVSjv">
+                    <div class="card-icon">COVERS</div><h3>myFavouriteCovers</h3>
+                    <button class="control-btn playlist-download-btn" type="button">Download / update</button>
+                    <p class="playlist-card-status" role="status" aria-live="polite"></p>
+                </div>
             </div>
         </section>
 
@@ -144,7 +174,7 @@
             <form id="playlist-form" class="playlist-form">
                 <h2>Download or update a YouTube playlist</h2>
                 <label for="playlist-url">YouTube playlist URL</label>
-                <input id="playlist-url" name="url" type="url" placeholder="https://www.youtube.com/playlist?list=..." required>
+                <input id="playlist-url" name="url" type="url" placeholder="https://www.youtube.com/playlist?list=... (or /watch?v=...&amp;list=...)" required>
                 <label for="playlist-name">Playlist name</label>
                 <input id="playlist-name" name="name" type="text" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,99}" maxlength="100" placeholder="my_playlist" required>
                 <p class="form-help">Creates or replaces <code>~/Music/&lt;name&gt;.txt</code> and downloads missing audio into the configured playlist folder.</p>
@@ -181,6 +211,24 @@
                 </div>
                 <div class="station-card local-playlist-card" data-name="muzyka_do_pracy" data-url="pyradio_muzyka_do_pracy.txt">
                     <div class="card-icon">PRACA</div><h3>pyradio_muzyka_do_pracy</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="DANCE" data-url="pyradio_DANCE.txt">
+                    <div class="card-icon">DANCE</div><h3>pyradio_DANCE</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="jimTV" data-url="pyradio_jimTV.txt">
+                    <div class="card-icon">JIMTV</div><h3>pyradio_jimTV</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="ParniValjak_live_in_Pula" data-url="pyradio_ParniValjak_live_in_Pula.txt">
+                    <div class="card-icon">PARNI VALJAK</div><h3>pyradio_ParniValjak_live_in_Pula</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="Radio_Jacek" data-url="pyradio_Radio_Jacek.txt">
+                    <div class="card-icon">RADIO JACEK</div><h3>pyradio_Radio_Jacek</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="VintageCafe" data-url="pyradio_VintageCafe.txt">
+                    <div class="card-icon">VINTAGE</div><h3>pyradio_VintageCafe</h3>
+                </div>
+                <div class="station-card local-playlist-card" data-name="MyFavouriteCovers" data-url="pyradio_MyFavouriteCovers.txt">
+                    <div class="card-icon">COVERS</div><h3>pyradio_MyFavouriteCovers</h3>
                 </div>
                 <div class="station-card local-playlist-card" data-name="IMPREZKA" data-url="local-IMPREZKA.txt">
                     <div class="card-icon">PARTY</div><h3>local-IMPREZKA</h3>

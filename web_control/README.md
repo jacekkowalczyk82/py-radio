@@ -21,13 +21,17 @@ The **YouTube playlists** tab downloads or updates its configured playlists
 using the same process, saving them as `~/Music/pyradio_<playlist-name>.txt`.
 The configured playlists are available from the **Play Local Playlist** tab
 under their `pyradio_` filenames after downloading.
+Playlist URLs may use either `/playlist?list=...` or `/watch?v=...&list=...`.
 
 The **Play Local Playlist** tab sends one of the configured local playlist
 filenames (`local-IMPREZKA.txt`, `local-10-milions.txt`,
 `Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt`, `pyradio_Goralskie.txt`,
-`pyradio_Thompson.txt`, or `pyradio_AI.txt`) to the radio player. Each playlist
-`.txt` file must be in the radio player's `~/Music` directory. Audio paths in
-each file may be absolute or relative to `~/Music`.
+`pyradio_Thompson.txt`, `pyradio_AI.txt`, `pyradio_DANCE.txt`,
+`pyradio_jimTV.txt`, `pyradio_ParniValjak_live_in_Pula.txt`,
+`pyradio_Radio_Jacek.txt`, `pyradio_VintageCafe.txt`, or
+`pyradio_MyFavouriteCovers.txt`) to the radio player. Each playlist `.txt`
+file must be in the radio player's `~/Music` directory. Audio paths in each
+file may be absolute or relative to `~/Music`.
 
 The local playlist tab also provides next-track, pause, resume, and volume
 controls for the current VLC playback.
