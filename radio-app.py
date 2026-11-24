@@ -4,6 +4,7 @@ import sys
 import logging
 import json
 import os
+import re
 import random
 import subprocess
 import threading
@@ -48,6 +49,7 @@ LOCAL_PLAYLIST_FILES = {
     "pyradio_Thompson.txt",
     "pyradio_AI.txt",
 }
+LOCAL_PLAYLIST_FILENAME_PATTERN = re.compile(r"pyradio_[A-Za-z0-9][A-Za-z0-9_-]{0,99}\.txt")
 
 def download_youtube_playlist(playlist_url, temp_dir):
     os.makedirs(temp_dir, exist_ok=True)
@@ -143,7 +145,10 @@ def play_playlist(player, name, playlist_url, volume, config):
     playlist_thread.start()
 
 def read_local_playlist(playlist_filename):
-    if not isinstance(playlist_filename, str) or playlist_filename not in LOCAL_PLAYLIST_FILES:
+    if not isinstance(playlist_filename, str) or (
+        playlist_filename not in LOCAL_PLAYLIST_FILES
+        and not LOCAL_PLAYLIST_FILENAME_PATTERN.fullmatch(playlist_filename)
+    ):
         logger.error("Unsupported local playlist: %s", playlist_filename)
         return []
 

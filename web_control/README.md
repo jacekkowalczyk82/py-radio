@@ -17,6 +17,11 @@ the downloaded audio file paths. Unavailable playlist entries are skipped; if
 some tracks are still available, the playlist is saved with those tracks and
 the job reports a partial success.
 
+The **YouTube playlists** tab downloads or updates its configured playlists
+using the same process, saving them as `~/Music/pyradio_<playlist-name>.txt`.
+The configured playlists are available from the **Play Local Playlist** tab
+under their `pyradio_` filenames after downloading.
+
 The **Play Local Playlist** tab sends one of the configured local playlist
 filenames (`local-IMPREZKA.txt`, `local-10-milions.txt`,
 `Eric-Clapton-Live-at-the-Royal-Albert-Hall.txt`, `pyradio_Goralskie.txt`,

@@ -252,6 +252,34 @@ input[type=range]::-webkit-slider-runnable-track {
     color: var(--danger-color);
 }
 
+.playlist-download-btn {
+    justify-content: center;
+    margin-top: 1rem;
+    padding: 0.7rem 1rem;
+    background: var(--accent-color);
+    color: white;
+}
+
+.playlist-download-btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.playlist-card-status {
+    min-height: 1.5rem;
+    margin: 0.75rem 0 0;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.playlist-card-status.success {
+    color: var(--success-color);
+}
+
+.playlist-card-status.error {
+    color: var(--danger-color);
+}
+
 .station-card {
     background: var(--card-bg);
     border-radius: 16px;

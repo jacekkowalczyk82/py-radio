@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('btn-next');
     const pauseBtn = document.getElementById('btn-pause');
     const resumeBtn = document.getElementById('btn-resume');
-    let activePlaylistJob = null;
-
     let currentVolume = 100;
 
     tabButtons.forEach(button => {
@@ -29,52 +27,59 @@ document.addEventListener('DOMContentLoaded', () => {
     playlistForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const submitButton = playlistForm.querySelector('button[type="submit"]');
+        await startPlaylistUpdate(
+            playlistForm.elements.url.value.trim(),
+            playlistForm.elements.name.value.trim(),
+            playlistJobStatus,
+            submitButton
+        );
+    });
+
+    async function startPlaylistUpdate(url, name, statusElement, submitButton) {
         submitButton.disabled = true;
-        playlistJobStatus.textContent = 'Starting playlist update...';
-        playlistJobStatus.className = 'playlist-job-status';
+        statusElement.textContent = 'Starting playlist update...';
+        statusElement.className = `${statusElement.className.split(' ')[0]} pending`;
 
         try {
             const response = await fetch('/api/playlists', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    url: playlistForm.elements.url.value.trim(),
-                    name: playlistForm.elements.name.value.trim()
-                })
+                body: JSON.stringify({ url, name })
             });
             const result = await response.json();
             if (!response.ok) {
                 throw new Error(result.message || 'Could not start playlist update.');
             }
 
-            activePlaylistJob = result.job_id;
-            await monitorPlaylistJob(submitButton);
+            await monitorPlaylistJob(result.job_id, statusElement);
         } catch (error) {
-            playlistJobStatus.textContent = error.message;
-            playlistJobStatus.classList.add('error');
-            activePlaylistJob = null;
+            statusElement.textContent = error.message;
+            statusElement.classList.remove('pending', 'success');
+            statusElement.classList.add('error');
+        } finally {
             submitButton.disabled = false;
         }
-    });
+    }
 
-    async function monitorPlaylistJob(submitButton) {
-        while (activePlaylistJob) {
+    async function monitorPlaylistJob(jobId, statusElement) {
+        while (true) {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            const response = await fetch(`/api/playlists/${activePlaylistJob}`);
+            const response = await fetch(`/api/playlists/${jobId}`);
             const result = await response.json();
             if (!response.ok) {
                 throw new Error(result.message || 'Could not check playlist update status.');
             }
 
-            playlistJobStatus.textContent = result.message;
+            statusElement.textContent = result.message;
             if (result.status !== 'running') {
                 if (result.status === 'error') {
-                    playlistJobStatus.classList.add('error');
+                    statusElement.classList.remove('pending', 'success');
+                    statusElement.classList.add('error');
                 } else {
-                    playlistJobStatus.classList.add('success');
+                    statusElement.classList.remove('pending', 'error');
+                    statusElement.classList.add('success');
                 }
-                activePlaylistJob = null;
-                submitButton.disabled = false;
+                return;
             }
         }
     }
@@ -126,14 +131,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Station Selection
     stationCards.forEach(card => {
         card.addEventListener('click', () => {
+            if (card.classList.contains('playlist-card')) {
+                return;
+            }
+
             const name = card.dataset.name;
             const url = card.dataset.url;
 
-            const action = card.classList.contains('local-playlist-card')
-                ? 'play_local_playlist'
-                : card.classList.contains('playlist-card') ? 'play_playlist' : 'play';
+            const action = card.classList.contains('local-playlist-card') ? 'play_local_playlist' : 'play';
             sendCommand(action, name, url, currentVolume);
             updateUIState(card);
+        });
+    });
+
+    document.querySelectorAll('.playlist-download-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const card = button.closest('.playlist-card');
+            const cardStatus = card.querySelector('.playlist-card-status');
+            startPlaylistUpdate(
+                card.dataset.url,
+                `pyradio_${card.dataset.name}`,
+                cardStatus,
+                button
+            );
         });
     });
 
