@@ -17,19 +17,6 @@
             <div class="status-indicator" id="status-indicator">Ready</div>
         </header>
 
-        <section class="controls-section">
-            <div class="main-controls">
-                <button id="btn-stop" class="control-btn stop-btn">
-                    <span class="icon">⏹</span> STOP
-                </button>
-                <div class="volume-control">
-                    <label for="volume-slider">Volume</label>
-                    <input type="range" id="volume-slider" min="0" max="100" value="100">
-                    <span id="volume-value">100%</span>
-                </div>
-            </div>
-        </section>
-
         <nav class="tabs" aria-label="Media source">
             <button class="tab-btn active" data-tab="radios">Radio</button>
             <button class="tab-btn" data-tab="playlists">YouTube playlists</button>
@@ -38,6 +25,18 @@
         </nav>
 
         <section class="tab-content active" id="radios">
+        <div class="controls-section">
+            <div class="main-controls">
+                <button id="radio-stop-btn" class="control-btn stop-btn" type="button">
+                    <span class="icon">⏹</span> STOP
+                </button>
+                <div class="volume-control">
+                    <label for="volume-slider">Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="100" value="100">
+                    <span id="volume-value">100%</span>
+                </div>
+            </div>
+        </div>
         <div class="stations-grid">
             <!-- Stations will be generated here, but for now hardcoded based on user list -->
             <div class="station-card" data-name="RMF FM" data-url="http://31.192.216.5/rmf_fm">
@@ -145,6 +144,9 @@
         <section class="tab-content" id="local-playlists">
             <section class="local-playlist-controls" aria-label="Local playlist playback controls">
                 <div class="local-playlist-buttons">
+                    <button class="control-btn stop-btn" id="local-stop-btn" type="button">
+                        <span class="icon">⏹</span> STOP
+                    </button>
                     <button class="control-btn playback-btn" id="btn-next" type="button">Next</button>
                     <button class="control-btn playback-btn" id="btn-pause" type="button">Pause</button>
                     <button class="control-btn playback-btn" id="btn-resume" type="button">Resume</button>

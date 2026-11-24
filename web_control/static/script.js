@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
-    const stopBtn = document.getElementById('btn-stop');
+    const stopButtons = document.querySelectorAll('.stop-btn');
     const statusIndicator = document.getElementById('status-indicator');
     const stationCards = document.querySelectorAll('.station-card');
     const tabButtons = document.querySelectorAll('.tab-btn');
@@ -116,9 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Stop Button
-    stopBtn.addEventListener('click', () => {
-        sendCommand('stop', null, null, 0);
-        updateUIState(null);
+    stopButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            sendCommand('stop', null, null, 0);
+            updateUIState(null);
+        });
     });
 
     // Station Selection
