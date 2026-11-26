@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
+    const yanosikVolumeSlider = document.getElementById('yanosik-volume-slider');
+    const yanosikVolumeValue = document.getElementById('yanosik-volume-value');
     const stopButtons = document.querySelectorAll('.stop-btn');
     const statusIndicator = document.getElementById('status-indicator');
     const stationCards = document.querySelectorAll('.station-card');
@@ -87,6 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Volume Slider Logic
     volumeSlider.addEventListener('input', (e) => {
         currentVolume = e.target.value;
+        volumeValue.textContent = `${currentVolume}%`;
+        yanosikVolumeSlider.value = currentVolume;
+        yanosikVolumeValue.textContent = `${currentVolume}%`;
+    });
+
+    yanosikVolumeSlider.addEventListener('input', () => {
+        currentVolume = yanosikVolumeSlider.value;
+        yanosikVolumeValue.textContent = `${currentVolume}%`;
+        volumeSlider.value = currentVolume;
         volumeValue.textContent = `${currentVolume}%`;
     });
 
