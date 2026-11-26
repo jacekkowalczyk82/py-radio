@@ -35,3 +35,6 @@ file may be absolute or relative to `~/Music`.
 
 The local playlist tab also provides next-track, pause, resume, and volume
 controls for the current VLC playback.
+
+The **Radio Yanosik** tab plays the live station stream published by
+[radioyanosik.pl](https://radioyanosik.pl/).
